@@ -325,7 +325,7 @@ export default {
 #layouts {
   display: flex;
   justify-content: center;
-  gap: 5rem;
+  gap: 2rem;
 }
 
 #filtering_layout {
@@ -336,12 +336,12 @@ export default {
 
 #filtering_layout,
 #classification_layout {
-  margin-top: 6rem;
+  margin-top: 3rem;
 }
 
 #classification_layout h3,
 #filtering_layout h3 {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   font-family: Roboto;
   font-size: 1.5rem;
   font-style: italic;

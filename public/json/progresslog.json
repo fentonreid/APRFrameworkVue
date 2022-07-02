@@ -1,0 +1,191 @@
+{
+  "weekContent": [
+    {
+      "id": "Week 1",
+      "totalHours": 16,
+      "entries": [
+        {
+          "hour": 4,
+          "description": "Planning the framework and then started to work on snakeyaml parsing"
+        },
+        {
+          "hour": 3,
+          "description": "Getting snakeYAML to work and planning the custom objects for gp and defects4J"
+        },
+        {
+          "hour": 6,
+          "description": "Proper parsing of the GP object, can deal with a list of mutationOperator classes or ‘all’ option, <br>Initial parsing of the Defects4J object"
+        },
+        {
+          "hour": 3,
+          "description": "Move main.java code out into Parser/runner.class and beginning initial setup of Defects4J"
+        }
+      ]
+    },
+
+    {
+      "id": "Week 2",
+      "totalHours": 25,
+      "entries": [
+        {
+          "hour": 6,
+          "description": "Validation for all properties, Defects4J setup, testCaseSelection yaml parsing and verification to a generalised structure"
+        },
+        {
+          "hour": 5,
+          "description": "Add ‘tmp/src/[identifier]/[BID_id]/Iterations/[iterations]/[mutationOperators] directory structure,<br>Added projectsPath static class that contains a list of directories relevant to the project"
+        },
+        {
+          "hour": 7,
+          "description": "Now able to get dynamic variables from a given path,<br>Can copy files to a destination,<br>Planned how to get and validate buggy program and fixed programs"
+        },
+        {
+          "hour": 7,
+          "description": "Moved to using Docker with Defects4J,<br>Planning how to provide config.yml,<br>Can run a test Java project in Docker,<br>SnakeYAML external.jar is added to test project via the Dockerfile and is built correctly,<br>SnakeYAML works correctly with Docker"
+        }
+      ]
+    },
+
+    {
+      "id": "Week 3",
+      "totalHours": 31,
+      "entries": [
+        {
+          "hour": 7,
+          "description": "Getting current Java project to work with Docker,<br>Project setup for development,<br>Mounted output file from container to host (so output files can be created)"
+        },
+        {
+          "hour": 3,
+          "description": "Setup CI/CD pipeline with Github actions,<br>Rewrote word files to markdown files"
+        },
+        {
+          "hour": 7,
+          "description": "Setup example project for maven,<br>Got snakeyaml, javaparser, Javadoc and junit5 setup,<br>Added volume sharing for src directory and output Javadoc to host directory"
+        },
+        {
+          "hour": 5,
+          "description": "Refactoring of parser, ~430 lines of code to ~280"
+        },
+        {
+          "hour": 5,
+          "description": "Refactoring ProjectPaths and creating ProjectPath class to represent the dynamic variables of a path string"
+        },
+        {
+          "hour": 3,
+          "description": "Validating the fixed and buggy code as well as checking out local repository"
+        },
+        {
+          "hour": 1,
+          "description": "Created a new project for GP parsing and AST manipulation"
+        }
+      ]
+    },
+
+    {
+      "id": "Week 4",
+      "totalHours": 24,
+      "entries": [
+        {
+          "hour": 5,
+          "description": "Setup GP testing project with docker,<br>Got number of test cases from checked out project,<br>Compiled and test program,<br>Working on a comparison between execution times currently: 16 hours with a population size of 100 for 100 generations}"
+        },
+        {
+          "hour": 4,
+          "description": "Logging how long it takes to run a GP with variable hyperparameters,<br>Trying to optimise these values, with optimising of code went from 2 days to 7.6 hours"
+        },
+        {
+          "hour": 7,
+          "description": "Create a GPThread that can handle the fitness function calculations for 1 thread,<br>Splitting this into two threads to log performance, got it working with 2 threads no .join required,<br>Remove comments from AST for copying of smaller file sizes"
+        },
+        {
+          "hour": 8,
+          "description": "Tried out Kubernetes on Digital Ocean,<br>Tried out VM machine on Digital Ocean and linode (slower by x2/x3)"
+        }
+      ]
+    },
+
+    {
+      "id": "Week 5",
+      "totalHours": 26,
+      "entries": [
+        {
+          "hour": 10,
+          "description": "Generic thread splitting,<br>Investigation of Defects4J bugs,<br>Researching Kubernetes,<br>Setup Kubctl and Doctl"
+        },
+        {
+          "hour": 7,
+          "description": "Got GP moved into dev project with multiple bugs being able to be run with different hyperparameters,<br>Fixed mutation rate issue with parser, when it had a value of 1,<br>Output patches of each bug into an output folder along with the given fixed patch,<br>Started writing tests for the Parser and Util classes"
+        },
+        {
+          "hour": 5,
+          "description": "Wrote ShellProcessBuilder tests,<br>Wrote ProjectPaths tests,<br>Wrote Defects4J tests"
+        },
+        {
+          "hour": 4,
+          "description": "Updated APRFramework Dockerfile and CI/CD pipeline,<br>Drafted an example CSV output file,<br>Created powerpoint presentation with example mutations"
+        }
+      ]
+    },
+
+    {
+      "id": "Week 6",
+      "totalHours": 29,
+      "entries": [
+        {
+          "hour": 4,
+          "description": "Added csv output, for general details and iteration details,<br>Planning PatchViewer + website"
+        },
+        {
+          "hour": 3,
+          "description": "Got patchviewer and docstrings options added to config.yml along with code to handle that implemented,<br>Refactored the project changing package names"
+        },
+        {
+          "hour": 6,
+          "description": "Began a quick introduction to Vue.js"
+        },
+        {
+          "hour": 5,
+          "description": "Started implementing vue website, prototyped patch viewer"
+        },
+        {
+          "hour": 7,
+          "description": "PatchViewer can now filter and classify patches and switch patches,<br>Restyled navbar with added home button,<br>Patchviewer now patches the classification so less writing to db is needed"
+        },
+        {
+          "hour": 4,
+          "description": "Researching and designing mutation operators,<br>Creating a presentation of 5 generic mutation operators, with possible combination to create 3"
+        }
+      ]
+    },
+    {
+      "id": "Week 7",
+      "totalHours": 0,
+      "entries": [
+        {
+          "hour": 4,
+          "description": "Classified 703 bugs into 5 mutation operators, or a mix, or other,<br>Had meeting with my supervisor, make a start on mutation operators,<br>Started implementing bar mutation"
+        },
+        {
+          "hour": 7,
+          "description": "Reading the Javaparser visited pdf,<br> Created a visitor to collect all binaryExprs,<br>Reworked this into using foreach"
+        },
+        {
+          "hour": 7,
+          "description": "Worked on removing a conditional expression, can currently only remove first condition,<br>Worked on lrr specifically line removal, have created a list of allowed nodes to remove and at random will remove one,<br>Added try, catch specificity so that either the try statement, a catch statement or finally statement is removed"
+        },
+        {
+          "hour": 5,
+          "description": "Worked on wrong method (WRM) mutation,<br>Got it working for overloaded methods where it handles; variable declarations, object creation and method call expressions"
+        },
+        {
+          "hour": 3,
+          "description": "Started to refactor BAR mutation, adding collecting of binaryExpr, binaryLiteralExpr and Unary Expr,<br>Operator replacements for binary, binaryLiteral and Unary expressions are functional"
+        },
+        {
+          "hour": 3,
+          "description": "Adding processLog and processLogEntry components to the vue website under the route '/processlog'"
+        }
+      ]
+    }
+  ]
+}
