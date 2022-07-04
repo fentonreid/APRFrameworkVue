@@ -184,6 +184,14 @@
         {
           "hour": 3,
           "description": "Adding processLog and processLogEntry components to the vue website under the route '/processlog'"
+        },
+        {
+          "hour": 8,
+          "description": "Unary expression addition to operators,<br>Added object creation expression to WRM mutation,<br> Constricting the fields to the class the expression was found at and valid types must be declared before the compared expressions"
+        },
+        {
+          "hour": 1,
+          "description": "BER implementation planned and started"
         }
       ]
     }
