@@ -159,7 +159,7 @@
     },
     {
       "id": "Week 7",
-      "totalHours": 0,
+      "totalHours": 38,
       "entries": [
         {
           "hour": 4,
@@ -192,6 +192,28 @@
         {
           "hour": 1,
           "description": "BER implementation planned and started"
+        }
+      ]
+    }, 
+    {
+      "id": "Week 8",
+      "totalHours": 0,
+      "entries": [
+        {
+          "hour": 4,
+          "description": "BER removal complete, with unary/enclosed expressions and regular binary expressions" 
+        },
+        {
+          "hour": 1,
+          "description": "Planning SVM mutation"
+        },
+        {
+          "hour": 3,
+          "description": "Fix GP issue where a project could not be checked out in time"
+        },
+        {
+          "hour": 2,
+          "description": "Include the program in a jar file with self contained dependencies"
         }
       ]
     }
