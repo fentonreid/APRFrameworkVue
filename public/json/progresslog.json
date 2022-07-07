@@ -214,6 +214,10 @@
         {
           "hour": 2,
           "description": "Include the program in a jar file with self contained dependencies"
+        }, 
+        {
+          "hour": 6,
+          "description": "Reworked parsing so that validation of modified and relevant classes is done before the gp is started,<br>bug ids in range that include non-valid ids are removed instead of throwing,<br> csv output error checking"
         }
       ]
     }
