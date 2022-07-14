@@ -197,7 +197,7 @@
     }, 
     {
       "id": "Week 8",
-      "totalHours": 0,
+      "totalHours": 19,
       "entries": [
         {
           "hour": 4,
@@ -217,7 +217,45 @@
         }, 
         {
           "hour": 6,
-          "description": "Reworked parsing so that validation of modified and relevant classes is done before the gp is started,<br>bug ids in range that include non-valid ids are removed instead of throwing,<br> csv output error checking"
+          "description": "Reworked parsing so that validation of modified and relevant classes is done before the gp is started,<br>Bug ids in range that include non-valid ids are removed instead of throwing,<br> csv output error checking"
+        },
+        {
+          "hour": 3, 
+          "description": "Started working on SVM mutation,<br>SimpleName to SimpleName mutation works, taking variable declarations from the field of the class, parameters of the method and local variables before simpleName declaration"
+        }
+      ]
+    },
+    {
+      "id":"Week 9",
+      "totalHours": 0,
+      "entries": [
+        {
+          "hour": 2,
+          "description": "Split LRR into lRemoval and lRelocation,<br>Implemented line relocation may need to limit to method declarations"
+        },
+        {
+          "hour": 6.5,
+          "description": "Split SVM into four new mutation files, for easier testing and less monolithic SVM mutation,<br>Reworked SVM mutation for it to be more general, replacing methods with variables in global or local scope in relation to class/methods,<br>Field access expressions involving enums are now handled,<br>Line Relocation mutation will now only relocate statements in the same method, and only consider methods with two or more unique nodes that can be relocated"
+        },
+        {
+          "hour": 3,
+          "description": "Worked on BER addition mutation, adding single expressions with and without negation,<br>Added binary expressions conjoined by a relational operator,<br>NEED TO GET METHOD CALLS FOR CLASS AND RESOLVE THEM!!!!"
+        },
+        {
+          "hour": 4,
+          "description": "Add to SVMMethodCall mutation the ability to get method calls from local scope and from other classes,<br>In the latter case nodes in local scope with the required type are considered, or if none are found then a new object is constructed using an available constructor,"
+        },
+        {
+          "hour": 2,
+          "description": "Removed SVM helper mutations, instead going to add a way to change the expressionCollector to aid testing,<br>Field Declarations now have compare line checking, enum declarations are now checked in the whole of the CU,<br>Method declaration resolver will now not add a method call to the method the node belongs to (prevent recursion)"
+        },
+        {
+          "hour": 2,
+          "description": "Getting all types from CU to create a binary expression for the BERExpansion mutation,<br>Moved list of boolean, relational and unary operators into MutationHelpers,<br>Renamed BAR mutation to BEM (Boolean expression manipulation) and BAR will combine both BEM AND BER together"
+        },
+        {
+          "hour": 3,
+          "description": "Creating imagemap with SVG for mutation operator tree,<br>Links for imagemap now go to corresponding pages,<br>Planned out what the mutation operator component will look like and what JSON data is required"
         }
       ]
     }
