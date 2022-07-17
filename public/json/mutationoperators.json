@@ -1,0 +1,156 @@
+{
+  "BAR": {
+    "mutationDescription": "This is a description for the BAR mutation...",
+    "examples": [
+      {
+        "preMutation": "public class TestMutation {\n    public boolean barMutation() {\n\n        if (x==5 && y == 5) {}",
+        "postMutation": "public class TestMutation {\n    public boolean barMutation() {\n\n+      if (x==5 || y == 5) {}",
+        "description": "This bug isolates this...",
+        "isolation": "1"
+      },
+      {
+        "preMutation": "public class TestMutation {\n    public boolean barMutation() {\n\n        if (x==5 && y == 5) {}",
+        "postMutation": "public class TestMutation {\n    public boolean barMutation() {\n\n-         if (x==5 || y == 5) {}",
+        "description": "This bug isolates this 2...",
+        "isolation": "2"
+      }
+    ]
+  },
+
+  "WRM": {
+    "mutationDescription": "X",
+    "examples": [
+      {
+        "id": "WRM1",
+        "preMutation": "public class Person {\n\n    public String getName() {\n        return \"Fenton Reid\";\n    }\n    \n    public String getName(String middleName) {\n        return \"Fenton \" + middleName + \" Reid\";\n    }\n\n    public void main() {\n        String name = ~getName(\"Saoirse\");\n    }\n}",
+        "postMutation": "public class Person {\n\n    public String getName() {\n        return \"Fenton Reid\";\n    }\n\n    public String getName(String middleName) {\n        return \"Fenton \" + middleName + \" Reid\";\n    }\n\n    public void main() {\n        String name = ~+getName();\n    }\n}",
+        "description": "Original 'getName(String middleName)' method call replaced with overloaded method which removes the 'name' parameter",
+        "isolation": "X"
+      },
+      {
+        "id": "WRM2",
+        "preMutation": "public class Person {\n    String middleName = \"Saoirse\";\n\n    public String getName() {\n        return \"Fenton Reid\";\n    }\n\n    public String getName(String middleName) {\n        return \"Fenton \" + middleName + \" Reid\";\n    }\n\n    public void main() {\n        String name = ~getName();\n    }\n}",
+        "postMutation": "public class Person {\n    String middleName = \"Saoirse\";\n\n    public String getName() {\n        return \"Fenton Reid\";\n    }\n\n    public String getName(String middleName) {\n        return \"Fenton \" + middleName + \" Reid\";\n    }\n\n    public void main() {\n        String name = ~+getName(middleName);\n    }\n}",
+        "description": "Original 'getName()' method call replaced with overloaded method which adds a 'middleName' parameter from the method calls local scope",
+        "isolation": "X"
+      },
+      {
+        "id": "WRM3",
+        "preMutation": "public class Person {\n    String middleName = \"Saoirse\";\n\n    public String getName(String first, String middle, String last) {\n        return \"Fenton\" + middle + \"Reid\";\n    }\n\n    public void main() {\n        String name = ~getName(\"Fenton\", middleName, \"Reid\");\n    }\n}",
+        "postMutation": "public class Person {\n    String middleName = \"Saoirse\";\n\n    public String getName(String first, String middle, String last) {\n        return \"Fenton\" + middle + \"Reid\";\n    }\n\n    public void main() {\n        String name = ~+getName(middleName, middleName, middleName);\n    }\n}",
+        "description": "Original 'getName()' method call is replaced with the same method where the parameters of this method are randomly determined",
+        "isolation": "X"
+      },
+      {
+        "id": "WRM4",
+        "preMutation": "public class Person {\n    String middleName = \"Saoirse\";\n\n    public String getName() {\n        return \"Fenton Reid\";\n    }\n\n    public String[] getName() {\n        return new String[] { \"Fenton\", \"Reid\" };\n    }\n\n    public void main() {\n        String name = getName();\n    }\n}\n",
+        "postMutation": "public class Person {\n    String middleName = \"Saoirse\";\n\n    public String getName() {\n        return \"Fenton Reid\";\n    }\n\n    public String[] getName() {\n        return new String[] { \"Fenton\", \"Reid\" };\n    }\n\n    public void main() {\n        String name = getName();\n    }\n}\n",
+        "description": "Method 'getName()' has an overloaded method with a different return type of 'String[]' which does not return a suitable value to replace the variable declaration 'String name'. In this case the original method 'getName()' with return type of String is used ",
+        "isolation": "X"
+      },
+      {
+        "id": "WRM5",
+        "preMutation": "public class Person {\n    String name = \"\";\n\n    public Person(String first, String last) {\n        this.name = first + \" \" + last;\n    }\n\n    public Person(String first, String middle, String last) {\n        this.name = first + \" \" + middle + \" \" + last;\n    }\n\n    public void main() {\n        String first = \"Fenton\";\n        String middle = \"Saoirse\";\n        String last =  \"Reid\";\n\n        Person person = ~new Person(first, middle, last);\n    }\n}",
+        "postMutation": "public class Person {\n    String name = \"\";\n\n    public Person(String first, String last) {\n        this.name = first + \" \" + last;\n    }\n\n    public Person(String first, String middle, String last) {\n        this.name = first + \" \" + middle + \" \" + last;\n    }\n\n    public void main() {\n        String first = \"Fenton\";\n        String middle = \"Saoirse\";\n        String last = \"Reid\";\n\t\t\n        Person person = ~+new Person(first, last);\n    }\n}",
+        "description": "Original 'Person(String first, String middle, String last)' constructor is replaced with an overloaded constructor which removes the 'middle' parameter. All parameters are determined randomly by nodes in local scope and therefore, could be different per run  ",
+        "isolation": "X"
+      },
+      {
+        "id": "WRM6",
+        "preMutation": "public class Person {\n    String name = \"\";\n\t\n    public Person(String first, String last) {\n        this.name = first + \" \" + last;\n    }\n\n    public Person(String first, String middle, String last) {\n        this.name = first + \" \" + middle + \" \" + last;\n    }\n\n    public void main() {\n        String first = \"Fenton\";\n        String middle = \"Saoirse\";\n        String last =  \"Reid\";\n\n        Person person = ~new Person(first, last);\n    }\n}\n",
+        "postMutation": "public class Person {\n    String name = \"\";\n\n    public Person(String first, String last) {\n        this.name = first + \" \" + last;\n    }\n\n    public Person(String first, String middle, String last) {\n        this.name = first + \" \" + middle + \" \" + last;\n    }\n\n    public void main() {\n        String first = \"Fenton\";\n        String middle = \"Saoirse\";\n        String last = \"Reid\";\n\t\t\n        Person person = ~+new Person(first, middle, last);\n    }\n}",
+        "description": "Original 'Person (String first, String last)' constructor is replaced with an overloaded constructor which adds a 'middleName' parameter from the object creation expressions local scope",
+        "isolation": "X"
+      },
+      {
+        "id": "WRM7",
+        "preMutation": "public class Person {\n    String name = \"\";\n\n    public Person(String first, String last) {\n        this.name = first + \" \" + last;\n    }\n\n    public void main() {\n        String first = \"Fenton\";\n        String last =  \"Reid\";\n\n        Person person = ~new Person(first, last);\n    }\n}",
+        "postMutation": "public class Person {\n    String name = \"\";\n\n    public Person(String first, String last) {\n        this.name = first + \" \" + last;\n    }\n\n    public void main() {\n        String first = \"Fenton\";\n        String last =  \"Reid\";\n\t\t\n        Person person = ~+new Person(last, first);\n    }\n}",
+        "description": "Original 'getName(String first, String last)' constructor has no overloaded constructors, so the original constructor is used. All parameters are determined randomly by nodes in the local scope of the program.",
+        "isolation": "X"
+      }
+    ]
+  },
+
+  "BEM": {
+    "mutationDescription": "Boolean Expression Manipulator...",
+    "examples": [
+      {
+        "id": "BEM1",
+        "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~if (age > 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~+if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
+        "description": "The binary expression 'age == 20' is switched with a random relational operator of '!=' in this case",
+        "isolation": "X"
+      },
+      {
+        "id": "BEM2",
+        "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~if (age > 20 && age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~+if (age > 20 || age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
+        "description": "The binary expression 'age > 20 && age < 30' is switched with a random boolean operator of '||' in this case ",
+        "isolation": "X"
+      },
+      {
+        "id": "BEM3",
+        "preMutation": "public class Person {\n    int age = 22;\n\n    public boolean inTwenties() {\n        if (age > 20 && age < 30) {\n            return true;\n        }\n\n        return ~false;\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 22;\n\n    public boolean inTwenties() {\n        if (age > 20 && age < 30) {\n            return true;\n        }\n\n        return ~+true;\n    }\n}",
+        "description": "The final return statement with a boolean literal value of 'false' has been flipped to 'true' ",
+        "isolation": "X"
+      },
+      {
+        "id": "BEM4",
+        "preMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n        String message = ~favouriteNumber > 0 && favouriteNumber <= 6 ? \"Are you a dice?\" : \"Hmm, not a dice!\";\n        System.out.println(message);\n    }\n}",
+        "postMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n        String message = ~+favouriteNumber > 0 || favouriteNumber <= 6 ? \"Are you a dice?\" : \"Hmm, not a dice!\";\n        System.out.println(message);\n    }\n}",
+        "description": "The ternary operator's boolean operator has been switched in this instance ",
+        "isolation": "X"
+      },
+      {
+        "id": "BEM5",
+        "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~if (age > 20 && age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\t\n        ~+if (!(age > 20) && age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
+        "description": "The binary expression '(age > 20 && age < 30)' has negation added to its first expression 'age > 20'",
+        "isolation": "X"
+      },
+      {
+        "id": "BEM6",
+        "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\t\n        ~if (!(age > 20) && age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
+        "postMutation": "public class Person {\n\n    int age = 22;\n\n    public void main() {\n\n        ~+if ((age > 20) && age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
+        "description": "The unary expression '!(age > 20)' has been removed to leave only the expression. The expression is wrapped in an enclosed expression so that the boolean logic enclosed in the parenthesis order is unchanged",
+        "isolation": "X"
+      }
+    ]
+  },
+
+  "BERRemoval": {
+    "mutationDescription": "...",
+    "examples": [
+      {
+        "id": "BERRemoval1",
+        "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~if (age > 20 && age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~-if (age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
+        "description": "",
+        "isolation": "The compound expression 'age > 20 && age < 30' has one expression removed at random in this case 'age > 20'"
+      },
+      {
+        "id": "BERRemoval2",
+        "preMutation": "public class Person {\n\n    int age = 22;\n\n    public void main() {\n\n         if (age > 20) {\n            System.out.println(\"You are over 20 years old!\");\n        }\n    }\n}",
+        "postMutation": " public class Person {\n\n    int age = 22;\n\n    public void main() {\n\n        if (age > 20) {\n            System.out.println(\"You are over 20 years old!\");\n        }\n    }\n}",
+        "description": "The expression 'age > 20' is not a compound expression so the expression cannot be removed, therefore the Compilation Unit is returned unmodified",
+        "isolation": "X"
+      },
+      {
+        "id": "BERRemoval3",
+        "preMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n        \n        String message = ~favouriteNumber > 0 && favouriteNumber <= 6 ? \"are you a dice\" : \"hmm, not a dice!\";\n        System.out.println(message);\n    }\n}",
+        "postMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n        \n        String message = ~+favouriteNumber > 0 ? \"are you a dice\" : \"hmm, not a dice!\";\n        System.out.println(message);\n    }\n}",
+        "description": "The ternary operators compound expression 'favouriteNumber > 0 && favouriteNumber <= 6' has a random expression removed in this case 'favouriteNumber <= 6'",
+        "isolation": "X"
+      },
+      {
+        "id": "BERRemoval4",
+        "preMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n\n        String message = ~favouriteNumber > 0 ? \"Are you a dice?\" : \"Hmm, not a dice!\";\n        System.out.println(message);\n    }\n}",
+        "postMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n\n        String message = ~+\"Are you a dice?\";\n        System.out.println(message);\n    }\n}",
+        "description": "The ternary operator 'favouriteNumber > 0 && favouriteNumber <= 6' is not a compound expression, in these instances the BER Removal mutation will keep the true assignment of the ternary operator",
+        "isolation": "X"
+      }
+    ]
+  }
+}

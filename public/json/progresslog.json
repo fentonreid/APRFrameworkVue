@@ -194,14 +194,14 @@
           "description": "BER implementation planned and started"
         }
       ]
-    }, 
+    },
     {
       "id": "Week 8",
       "totalHours": 19,
       "entries": [
         {
           "hour": 4,
-          "description": "BER removal complete, with unary/enclosed expressions and regular binary expressions" 
+          "description": "BER removal complete, with unary/enclosed expressions and regular binary expressions"
         },
         {
           "hour": 1,
@@ -214,19 +214,19 @@
         {
           "hour": 2,
           "description": "Include the program in a jar file with self contained dependencies"
-        }, 
+        },
         {
           "hour": 6,
           "description": "Reworked parsing so that validation of modified and relevant classes is done before the gp is started,<br>Bug ids in range that include non-valid ids are removed instead of throwing,<br> csv output error checking"
         },
         {
-          "hour": 3, 
+          "hour": 3,
           "description": "Started working on SVM mutation,<br>SimpleName to SimpleName mutation works, taking variable declarations from the field of the class, parameters of the method and local variables before simpleName declaration"
         }
       ]
     },
     {
-      "id":"Week 9",
+      "id": "Week 9",
       "totalHours": 0,
       "entries": [
         {
@@ -256,6 +256,14 @@
         {
           "hour": 3,
           "description": "Creating imagemap with SVG for mutation operator tree,<br>Links for imagemap now go to corresponding pages,<br>Planned out what the mutation operator component will look like and what JSON data is required"
+        },
+        {
+          "hour": 4,
+          "description": "Create mutation page and mutation card components with initial design,<br>Initial styling of mutation card components,<br>Filter method declarations checking to make sure static methods in interface and not abstract for collection,<br>NEED TO ADD OBJECT CREATION EXPRESSIONS FOR STATIC METHODS AND FIELDS :P"
+        },
+        {
+          "hour": 7,
+          "description": "Handling of static fields and methods in general and checking for interface and abstract classes which implicitly define static fields,<br>WRM test plan written,<br>Improve highlighting of pre and post mutation code, adding highlighting to any code that was changed,<br>WRM, BEM and BER Removal mutation code added to website"
         }
       ]
     }

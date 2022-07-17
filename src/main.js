@@ -2,7 +2,6 @@ import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 import App from "./App.vue";
-
 import PatchViewer from "./components/patchviewer/PatchViewer.vue";
 import GeneratedPatches from "./components/generatedpatches/GeneratedPatches.vue";
 import ProgressLog from "./components/progresslog/ProgressLog.vue";
@@ -17,11 +16,10 @@ import BER from "./components/mutationoperators/implementations/BER.vue";
 import BEM from "./components/mutationoperators/implementations/BEM.vue";
 import BERExpansion from "./components/mutationoperators/implementations/BERExpansion.vue";
 import BERRemoval from "./components/mutationoperators/implementations/BERRemoval.vue";
- 
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: "/", component: App },
     { path: "/patchviewer", component: PatchViewer },
     { path: "/generatedpatches", component: GeneratedPatches },
     { path: "/progresslog", component: ProgressLog },
