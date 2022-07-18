@@ -152,5 +152,247 @@
         "isolation": "X"
       }
     ]
+  },
+
+  "BERExpansion": {
+    "mutationDescription": "...",
+    "examples": [
+      {
+        "id": "BERExpansion1",
+        "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        boolean isCitizen = true;\n\n        ~if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}   ",
+        "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        boolean isCitizen = true;\n\t\t\n        ~+if (age == 20 && !isCitizen) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
+        "description": "The single expression 'age == 20' has a 25% chance to add a single expression with negation. In this example the boolean type 'isCitizen' was negated and added to the right hand side of the original expression",
+        "isolation": "X"
+      },
+      {
+        "id": "BERExpansion2",
+        "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        boolean isCitizen = true;\n\n        ~if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        boolean isCitizen = true;\n\n        ~+if (isCitizen || age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}\n",
+        "description": "The single expression 'age == 20' has a 25% chance to add a single expression without negation. In this example the boolean type 'isCitizen' and has been combined to the left hand side of the expression",
+        "isolation": "X"
+      },
+      {
+        "id": "BERExpansion3",
+        "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        int tenYearsOlder = age + 10;\n\n        ~if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}\n",
+        "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        int tenYearsOlder = age + 10;\n        \n        ~+if (age == 20 || tenYearsOlder <= age) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
+        "description": "The single expression 'age == 20' has a 50% chance to add a binary expression. In this example the generated binary expression has been added to right of the original expression, combining 'tenYearsOlder' and 'age' integer variables with a random relational operator, and combining both expressions together with a random boolean operator",
+        "isolation": "X"
+      },
+      {
+        "id": "BERExpansion4",
+        "preMutation": "public class Person {\n    String first = \"Fenton\";\n    String last = \"Reid\";\n\n    public void main() {\n\n        ~if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
+        "postMutation": "public class Person {\n    String first = \"Fenton\";\n    String last = \"Reid\";\n\n    public void main() {\n    \n        ~+if (first.equals(last) || age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
+        "description": "The single expression 'age == 20' has a 50% chance to add a binary expression. Since the two nodes chosen for comparison are string types the .equals() method is used for comparison rather than a standard relational operator.",
+        "isolation": "X"
+      },
+      {
+        "id": "BERExpansion5",
+        "preMutation": "public class Person {\n\n    public void main() {\n\n        if (true) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
+        "postMutation": "public class Person {\n\n    public void main() {\n\n        if (true) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
+        "description": "No expressions where found in the program so no valid mutation can take place, so the original program is returned",
+        "isolation": "X"
+      },
+      {
+        "id": "BERExpansion6",
+        "preMutation": "public class Person {\n\n    public void main() {\n        int age = 22;\n\n        if (age > 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
+        "postMutation": "public class Person {\n\n    public void main() {\n        int age = 22;\n\n        if (age > 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
+        "description": "No valid mutation can take place as there is no valid boolean type for a single expression and only one local node for a binary expression. The original program is returned in this instance",
+        "isolation": "X"
+      }
+    ]
+  },
+
+  "LRRemoval": {
+    "mutationDescription": "...",
+    "examples": [
+      {
+        "id": "LRRemoval1",
+        "preMutation": "public class Person {\n    ~int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n} ",
+        "postMutation": "public class Person {\n    ~-int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n} ",
+        "description": "The field declaration 'age = 22' has been chosen at random by the mutation and removed",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval2",
+        "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~if (age == 20) {\n            ~System.out.println(\"Over 20 years old!\");\n\n        ~} else if (age > 30) {\n            ~System.out.println(\"Over 30 years old!\");\n\n        ~} else {\n            ~System.out.println(\"Not sure, what age you are!\");\n        ~}\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~-if (age == 20) {\n            ~-System.out.println(\"Over 20 years old!\");\n\n        ~-} else if (age > 30) {\n            ~-System.out.println(\"Over 30 years old!\");\n\n        ~-} else {\n            ~-System.out.println(\"Not sure, what age you are!\");\n        ~-}\n    }\n}",
+        "description": "The IF statement has been chosen at random and removed by the mutation, all statements below this if statement, e.g. the else-if and else branches are removed also",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval3",
+        "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n\n        } ~else if (age > 30) {\n            ~System.out.println(\"Over 30 years old!\");\n        ~}\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n\n        } ~-else if (age > 30) {\n            ~-System.out.println(\"Over 30 years old!\");\n        ~-}\n    }\n}",
+        "description": "The else-if branch of the IF statement has been chosen at random and removed by the mutation. The else-if statement is completely removed",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval4",
+        "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n\n        } else if (age > 30) {\n            System.out.println(\"Over 30 years old!\");\n            \n        } ~else {\n            ~System.out.println(\"Not sure, what age you are!\");\n        ~}\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n\n        } else if (age > 30) {\n            System.out.println(\"Over 30 years old!\");\n            \n        } ~-else {\n            ~-System.out.println(\"Not sure, what age you are!\");\n        ~-}\n    }\n}",
+        "description": "The else branch of the IF statement has been chosen at random and removed by the mutation. The else statement is completely removed",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval5",
+        "preMutation": "public class Person {\n    String[] hobbies = new String[] { \"Skiing\", \"Gaming\", \"Swimming\" };\n\n    public void main() {\n\n        ~for (String hobby : hobbies) {\n            ~System.out.println(\"I like this hobby: \" + hobby);\n        ~}\n    }\n}",
+        "postMutation": "public class Person {\n    String[] hobbies = new String[] { \"Skiing\", \"Gaming\", \"Swimming\" };\n\n    public void main() {\n\n        ~-for (String hobby : hobbies) {\n            ~-System.out.println(\"I like this hobby: \" + hobby);\n        ~-}\n    }\n}",
+        "description": "The enhanced-for loop has been chosen at random and removed by the mutation. The enhanced-for loops body has been completely removed",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval6",
+        "preMutation": "public class Person {\n    int age = 20;\n\n    public void main() {\n\n        int i = 0;\n        ~while (i < age) {\n            ~System.out.println(\"You are not: \" + i);\n            ~i++;\n        ~}\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 20;\n\n    public void main() {\n\n        int i = 0;\n        ~-while (i < age) {\n            ~-System.out.println(\"You are not: \" + i);\n            ~-i++;\n        ~-}\n    }\n}",
+        "description": "The while loop has been chosen at random and removed by the mutation. The while loops body has been completely removed",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval7",
+        "preMutation": "public class Person {\n    int age = 20;\n\n    public void main() {\n\n        int i = 1;\n        ~do {\n            ~System.out.println(\"You are not \" + i + \" year(s) old\");\n            ~i++;\n        ~}\n        ~while (i < age);\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 20;\n\n    public void main() {\n\n        int i = 1;\n        ~-do {\n            ~-System.out.println(\"You are not \" + i + \" year(s) old\");\n            ~-i++;\n        ~-}\n        ~-while (i < age);\n    }\n}",
+        "description": "The Do-While loop has been chosen at random and removed by the mutation, additionally the DO statements body has also been removed",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval8",
+        "preMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            getAgeAsString();\n\n        } catch (Exception ex) {\n            ~throw new NullPointerException(\"Cannot cast properly\");\n        }\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            getAgeAsString();\n\n        } catch (Exception ex) {\n            ~-throw new NullPointerException(\"Cannot cast properly\");\n        }\n    }\n}",
+        "description": "The throw statement has been chosen at random and removed by the mutation, the outer catch is left intact as it was selected to be removed",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval9",
+        "preMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = String.valueOf(age);\n        ~return ageString.toString();\n    }\n    \n    public void main() {\n        System.out.println(getAgeAsString());\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = String.valueOf(age);\n        ~-return ageString.toString();\n    }\n    \n    public void main() {\n        System.out.println(getAgeAsString());\n    }\n}",
+        "description": "The return statement of the 'getAgeAsString()' has been chosen at random and removed by the mutation",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval10",
+        "preMutation": "public class Person {\n    String[] hobbies = new String[] { \"Skiing\", \"Gaming\", \"Swimming\" };\n\n    public void main() {\n\n        for (String hobby : hobbies) {\n\n            if (hobby.equals(\"Gaming\")) {\n                System.out.println(\"You found my favourite hobby: \" + Gaming);\n                ~break;\n            }\n\n            System.out.println(\"I like this hobby: \" + hobby);\n        }\n    }\n}",
+        "postMutation": "public class Person {\n    String[] hobbies = new String[] { \"Skiing\", \"Gaming\", \"Swimming\" };\n\n    public void main() {\n\n        for (String hobby : hobbies) {\n\n            if (hobby.equals(\"Gaming\")) {\n                System.out.println(\"You found my favourite hobby: \" + Gaming);\n                ~-break;\n            }\n\n            System.out.println(\"I like this hobby: \" + hobby);\n        }\n    }\n}",
+        "description": "The break statement in the IF statement body has been chosen at random and removed by the mutation",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval11",
+        "preMutation": "public class Person {\n    String[] hobbies = new String[] { \"Skiing\", \"Gaming\", \"Swimming\" };\n\n    public void main() {\n\n        for (String hobby : hobbies) {\n\n            if (hobby.equals(\"Gaming\")) {\n                System.out.println(\"You found my favourite hobby: \" + Gaming);\n                ~continue;\n            }\n\n            System.out.println(\"I like this hobby: \" + hobby);\n        }\n    }\n}",
+        "postMutation": "public class Person {\n    String[] hobbies = new String[] { \"Skiing\", \"Gaming\", \"Swimming\" };\n\n    public void main() {\n\n        for (String hobby : hobbies) {\n\n            if (hobby.equals(\"Gaming\")) {\n                System.out.println(\"You found my favourite hobby: \" + Gaming);\n                ~-continue;\n            }\n\n            System.out.println(\"I like this hobby: \" + hobby);\n        }\n    }\n}",
+        "description": "The continue statement in the IF statement body has been chosen at random and removed by the mutation",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval12",
+        "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            ~System.out.println(\"Over 20 years old!\");\n        }\n    }\n} ",
+        "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            ~-System.out.println(\"Over 20 years old!\");\n        }\n    }\n} ",
+        "description": "The 'System.out.println' method call has been chosen at random and removed by the mutation. The IF statement branch is left without a body but not removed, to prevent other possible branches from being removed",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval13",
+        "preMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        ~try {\n            ~getAgeAsString();\n\n        ~} catch (Exception ex) {\n            ~throw new NullPointerException(\"Cannot cast properly\");\n\n        ~} finally {\n            ~System.out.println(\"Error caught and action taken\");\n        ~}\n    }\n}\n",
+        "postMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        ~-try {\n            ~-getAgeAsString();\n\n        ~-} catch (Exception ex) {\n            ~-throw new NullPointerException(\"Cannot cast properly\");\n\n        ~-} finally {\n            ~-System.out.println(\"Error caught and action taken\");\n        ~-}\n    }\n}\n",
+        "description": "The Try statement has been chosen at random and removed by the mutation. As the try statement was selected the catch and optional finally block are also removed to preserve the correctness of the code",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval14",
+        "preMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            getAgeAsString();\n\n        ~} catch (Exception ex) {\n            ~throw new NullPointerException(\"Cannot cast properly\");\n\t\t\t\n        } finally {\n            System.out.println(\"Error caught and action taken\");\n\t}\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            getAgeAsString();\n\n        ~-} catch (Exception ex) {\n            ~-throw new NullPointerException(\"Cannot cast properly\");\n\t\t\n        } finally {\n            System.out.println(\"Error caught and action taken\");\n\t}\n    }\n}\n",
+        "description": "The Try statement has been chosen at random by the mutation, then the mutation decided randomly that the catch statement attached to the try statement should be removed along with its body",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval15",
+        "preMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            getAgeAsString();\n\n        } catch (Exception ex) {\n            throw new NullPointerException(\"Cannot cast properly\");\n\t\t\t\n        ~} finally {\n            ~System.out.println(\"Error caught and action taken\");\n\t}\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            getAgeAsString();\n\n        } catch (Exception ex) {\n            throw new NullPointerException(\"Cannot cast properly\");\n\t\t\t\n        ~-} finally {\n            ~-System.out.println(\"Error caught and action taken\");\n\t}\n    }\n}",
+        "description": "The Try statement has been chosen at random by the mutation, then the mutation decided randomly that the finally statement attached to the try statement should be removed along with its body",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval16",
+        "preMutation": "public class Person {\n    String favouriteColour = \"cyan\";\n\n    public void main() {\n\n        ~switch (favouriteColour) {\n\n            ~case \"red\":\n                ~System.out.println(\"Anger\");\n                ~break;\n\n            ~case \"cyan\":\n                ~System.out.println(\"Tranquil\");\n                ~break;\n\n            ~default:\n                ~System.out.println(\"Could not determine your mood\");\n        ~}\n    }\n}",
+        "postMutation": "public class Person {\n    String favouriteColour = \"cyan\";\n\n    public void main() {\n\n        ~-switch (favouriteColour) {\n\n            ~-case \"red\":\n                ~-System.out.println(\"Anger\");\n                ~-break;\n\n            ~-case \"cyan\":\n                ~-System.out.println(\"Tranquil\");\n                ~-break;\n\n            ~-default:\n                ~-System.out.println(\"Could not determine your mood\");\n        ~-}\n    }\n}",
+        "description": "The Switch statement has been chosen at random by the mutation, the Switch statement including the case and default statements have been entirely removed to preserve the correctness of the code",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval17",
+        "preMutation": "public class Person {\n    String favouriteColour = \"cyan\";\n\n    public void main() {\n\n        switch (favouriteColour) {\n\n            ~case \"red\":\n                ~System.out.println(\"Anger\");\n                ~break;\n\n            case \"cyan\":\n                System.out.println(\"Tranquil\");\n                break;\n\n            default:\n                System.out.println(\"Could not determine your mood\");\n        }\n    }\n}",
+        "postMutation": "public class Person {\n    String favouriteColour = \"cyan\";\n\n    public void main() {\n\n        switch (favouriteColour) {\n\n            ~-case \"red\":\n                ~-System.out.println(\"Anger\");\n                ~-break;\n\n            case \"cyan\":\n                System.out.println(\"Tranquil\");\n                break;\n\n            default:\n                System.out.println(\"Could not determine your mood\");\n        }\n    }\n}",
+        "description": "The Switch case '\"red\"' has been chosen at random by the mutation and the case entry and its body are removed",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRemoval18",
+        "preMutation": "public class Person {\n    String favouriteColour = \"cyan\";\n\n    public void main() {\n        switch (favouriteColour) {\n\n            case \"red\":\n                System.out.println(\"Anger\");\n                break;\n\n            case \"cyan\":\n                System.out.println(\"Tranquil\");\n                break;\n\n            ~default:\n                ~System.out.println(\"Could not determine your mood\");\n        }\n    }\n}",
+        "postMutation": "public class Person {\n    String favouriteColour = \"cyan\";\n\n    public void main() {\n        switch (favouriteColour) {\n\n            case \"red\":\n                System.out.println(\"Anger\");\n                break;\n\n            case \"cyan\":\n                System.out.println(\"Tranquil\");\n                break;\n\n            ~-default:\n                ~-System.out.println(\"Could not determine your mood\");\n       }\n    }\n}",
+        "description": "The default keyword has been chosen at random by the mutation and the default statement and its body are removed ",
+        "isolation": "X"
+      }
+    ]
+  },
+
+  "LRRelocation": {
+    "mutationDescription": "...",
+    "examples": [
+      {
+        "id": "LRRelocation1",
+        "preMutation": "public class Person {\n\n    public void main() {\n        ~String first = \"Fenton\";\n        String last = \"Reid\";\n    }\n}",
+        "postMutation": "public class Person {\n\n    public void main() {\n        String last = \"Reid\";\n        ~+String first = \"Fenton\";\n    }\n}",
+        "description": "The variable assignment 'String last = \"Reid\"' has switched places with the 'first' variable",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRelocation2",
+        "preMutation": "public class Person {\n    \n    public String getName(String first, String last) {\n        return first + \" \" + last;\n    }\n\n    public String getName(String first, String middle, String last) {\n        return first + \" \" + middle + \" \" + last;\n    }\n\n    public void main() {\n\n        ~System.out.println(getName(\"Fenton\", \"Reid\"));\n        System.out.println(getName(\"Fenton\", \"Saoirse\", \"Reid\"));\n    }\n}",
+        "postMutation": "public class Person {\n\n    public String getName(String first, String last) {\n        return first + \" \" + last;\n    }\n\n    public String getName(String first, String middle, String last) {\n        return first + \" \" + middle + \" \" + last;\n    }\n\n    public void main() {\n\n        System.out.println(getName(\"Fenton\", \"Saoirse\", \"Reid\"));\n        ~+System.out.println(getName(\"Fenton\", \"Reid\"));\n    }\n}",
+        "description": "",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRelocation3",
+        "preMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            ~getAgeAsString();\n\n        } catch (Exception ex) {\n            ~throw new NullPointerException(\"Cannot cast properly\");\n        }\n    }\n}",
+        "postMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            ~+throw new NullPointerException(\"Cannot cast properly\");\n\n        } catch (Exception ex) {\n            ~+getAgeAsString();\n        }\n    }\n}",
+        "description": "",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRelocation4",
+        "preMutation": "",
+        "postMutation": "",
+        "description": "",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRelocation5",
+        "preMutation": "",
+        "postMutation": "",
+        "description": "",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRelocation6",
+        "preMutation": "",
+        "postMutation": "",
+        "description": "",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRelocation7",
+        "preMutation": "",
+        "postMutation": "",
+        "description": "",
+        "isolation": "X"
+      },
+      {
+        "id": "LRRelocation8",
+        "preMutation": "",
+        "postMutation": "",
+        "description": "",
+        "isolation": "X"
+      }
+    ]
   }
 }

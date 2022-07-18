@@ -264,6 +264,10 @@
         {
           "hour": 7,
           "description": "Handling of static fields and methods in general and checking for interface and abstract classes which implicitly define static fields,<br>WRM test plan written,<br>Improve highlighting of pre and post mutation code, adding highlighting to any code that was changed,<br>WRM, BEM and BER Removal mutation code added to website"
+        },
+        {
+          "hour": 6,
+          "description": "BERExpansion test plan written, BER Expansion for String and boolean types are handled differently, String types use the .equals() method for comparison and boolean types are restricted to '==' and '!=' relational operators,<br>LRR removal examples added to website,<br>LRR relocation test plan written, with a re-write of relocation so that a node is added above another random node in the same method"
         }
       ]
     }
