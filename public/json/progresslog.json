@@ -227,7 +227,7 @@
     },
     {
       "id": "Week 9",
-      "totalHours": 0,
+      "totalHours": 40.5,
       "entries": [
         {
           "hour": 2,
@@ -266,8 +266,27 @@
           "description": "Handling of static fields and methods in general and checking for interface and abstract classes which implicitly define static fields,<br>WRM test plan written,<br>Improve highlighting of pre and post mutation code, adding highlighting to any code that was changed,<br>WRM, BEM and BER Removal mutation code added to website"
         },
         {
-          "hour": 6,
+          "hour": 7,
           "description": "BERExpansion test plan written, BER Expansion for String and boolean types are handled differently, String types use the .equals() method for comparison and boolean types are restricted to '==' and '!=' relational operators,<br>LRR removal examples added to website,<br>LRR relocation test plan written, with a re-write of relocation so that a node is added above another random node in the same method"
+        }
+      ]
+    },
+
+    {
+      "id": "Week 10",
+      "totalHours": 0,
+      "entries": [
+        {
+          "hour": 3,
+          "description": "Added LRRelocation examples to website,<br>Higher mutations such as BAR inherit the examples of their children"
+        },
+        {
+          "hour": 3,
+          "description": "Improving BERRemoval to allow for method call expressions, boolean literal expressions to be removed,<br>BERRemoval will collect only the highest level binary expression not divide it into smaller parts"
+        },
+        {
+          "hour": 2,
+          "description": "Planning SVM examples,<br>Adding support to object creation expression when no constructors are available,<br>SVM examples added to website"
         }
       ]
     }

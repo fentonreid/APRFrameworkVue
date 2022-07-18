@@ -20,7 +20,7 @@
         mutationDetails[mutationId].examples != null
       "
     >
-      <MutationCard :examples="mutationDetails[mutationId].examples" />
+      <MutationCard :examples="getExamples()" />
     </div>
     <p v-else>Could not load examples for this mutation...</p>
   </div>
@@ -34,6 +34,7 @@ export default {
   data() {
     return {
       mutationDetails: json,
+      newMutationId: String,
     };
   },
   props: {
@@ -41,6 +42,30 @@ export default {
   },
   components: {
     MutationCard,
+  },
+  methods: {
+    getExamples() {
+      let examples = [];
+
+      if (
+        this.mutationDetails[this.mutationId] != null &&
+        this.mutationDetails[this.mutationId].examples != null
+      ) {
+        for (let example of this.mutationDetails[this.mutationId].examples) {
+          examples.push(example);
+        }
+      }
+
+      if (this.mutationDetails[this.mutationId].inherits != null) {
+        for (let child of this.mutationDetails[this.mutationId].inherits) {
+          for (let example of this.mutationDetails[child].examples) {
+            examples.push(example);
+          }
+        }
+      }
+
+      return examples;
+    },
   },
 };
 </script>
