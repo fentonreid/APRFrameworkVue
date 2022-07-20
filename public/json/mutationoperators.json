@@ -1,586 +1,527 @@
 {
   "BAR": {
-    "mutationDescription": "...",
-    "inherits": ["BERExpansion", "BERRemoval", "BEM"],
+    "mutationDescription": "The Boolean and Relational (BAR) mutation combines the functionality of both the BER and BEM mutations, with the mutation being able to; switch boolean and relational operators of expressions, add and remove negation to child expressions aadd and remove to parts of expressions also.",
+    "implementationDetails": "(1) Determine which mutation to choose from, 50/50 for either Boolean Expression Manipulation (BEM) or Boolean expansion and reduction (BER) mutation<br>(2) Run the mutation and return the modified program back",
+    "inherits": ["BERExpansion", "BERReduction", "BEM"],
     "examples": []
   },
 
   "BER": {
-    "mutationDescription": "This is a description for the BAR mutation...",
-    "inherits": ["BERExpansion", "BERRemoval"],
+    "mutationDescription": "The BER mutation provides the functionality of both the BER Expansion and BER Reduction mutations combined, with the end goal of this mutation to be able to add too and remove expressions found in the program.",
+    "implementationDetails": "(1) Determine which mutation to choose from, 50/50 for either BER Expansion or BER Reduction<br>(2) Run the mutation and return the modified program back",
+    "inherits": ["BERExpansion", "BERReduction"],
     "examples": []
   },
 
-  "SVM": {
-    "mutationDescription": "...",
-    "inherits": ["WRM"],
+  "GNR": {
+    "mutationDescription": "The Generate Node Replacement (GNR) mutation is a fairly diverse mutation with many possible outcomes, entry points to the program which consist of variable declarations, field access expression, object creation expressions and method call expressions are collected. Their values are replaced with a node that is generated from the nodes available to the entry point in the local and limited global scope. Local and global scope collection occurs for nodes with the same type, in the case of method declarations this is the return type and for object creation expressions the class that is being created. The local scope is defined as a collection of allowed nodes that appear in a class and/or method before the definition of the entry point. For instance enum declarations, field variables, method declarations (if the method is implemented, cases such as abstract or non-static methods in interfaces are ignored), variable declarations, object creation expressions, field access expressions and method parameters of the method the entry point belong to are collected. The global scope is defined as allowed nodes outside the method and/or class of the entry point, for instance method declarations that are implemented are collected from the same and other classes in the Compilation Unit. For the latter, objects may need to be instantiated or if the method is static then the name of the Class.method() is used, field variables are also accessible in the same and other classes.",
+    "implementationDetails": "(1) Entry point collection takes place, meaning variable declarations, field access expressions, method call expressions and object creation expressions in the program are collected<br>(2) If no allowed nodes in the program where found then the program is returned unmodified<br>(3) Otherwise a different action is performed based on the node instance<br>&emsp;(3.1) If the node is a variable declarator then the variable initialiser (e.g. i = 5, 5 is the initialiser), is switched with a node of the same type as determined by the variable type, in the local or global scope<br>&emsp;(3.2) If the node is a method call expression then the whole expression is switched with a node of the same type as determined by the method calls return type, in the local or global scope<br>&emsp;(3.3) If the node is a object creation expression then the whole expression is switched with a node of the same type as determined by the class the object belongs to, in the local or global scope<br>&emsp;(3.4) If the node is a field access expression then the whole expression is switched with a node of the same type as determined by the type of the field, in the local or global scope<br>&emsp;(3.5) If no nodes are available in the local or global scope<br>(4) Once a switch has occured then",
+    "inherits": ["SPM"],
     "examples": [
       {
-        "id": "SVM1",
+        "id": "GNR1",
         "preMutation": "public class Person {\n\n    public int agePlusTen(int age) {\n        return age + 10;\n    }\n\n    public void getAge(int newAge) {\n        ~int age;\n\n        if (age > 20 && age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n\n    public int agePlusTen(int age) {\n        return age + 10;\n    }\n\n    public void getAge(int newAge) {\n        ~+int age = agePlusTen(newAge);\n\n        if (age > 20 && age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
-        "description": "The variable declaration 'age' has been selected by the mutation to be replaced with the 'agePlusTen(int age)' method. For variable declaration replacement the assignment is replaced. This method requires an integer parameter so the mutation has chosen the 'newAge' parameter from the variable declarations local scope",
-        "isolation": "X"
+        "description": "The variable declaration 'age' has been selected by the mutation to be replaced with the 'agePlusTen(int age)' method. For variable declaration replacement the assignment is replaced. This method requires an integer parameter so the mutation has chosen the 'newAge' parameter from the variable declarations local scope"
       },
       {
-        "id": "SVM2",
+        "id": "GNR2",
         "preMutation": "public class Car {\n\n    public void printCarModel() {\n        System.out.println(\"Ford Fiesta\");\n    }\n}\n\npublic class Person {\n\n    public void printName(String first, String last) {\n        System.out.println(first + \" \" + last);\n    }\n    \n    public void main() {\n        ~printName(\"Fenton\", \"Reid\");\n    }\n}",
         "postMutation": "public class Car {\n\n    public void printCarModel() {\n        System.out.println(\"Ford Fiesta\");\n    }\n}\n\npublic class Person {\n\n    public void printName(String first, String last) {\n        System.out.println(first + \" \" + last);\n    }\n\n    public void main() {\n        ~-new Car().printCarModel();\n    }\n}",
-        "description": "The method call 'printName()' has been selected by the mutation to be replaced with the 'printCarModel()' method found in the Car class. Both methods have the same type of 'void' so are replaceable. To create the 'printCarModel()' method a Car class needs to be instantiated, in this example no constructors are available so the default constructor is used",
-        "isolation": "X"
+        "description": "The method call 'printName()' has been selected by the mutation to be replaced with the 'printCarModel()' method found in the Car class. Both methods have the same type of 'void' so are replaceable. To create the 'printCarModel()' method a Car class needs to be instantiated, in this example no constructors are available so the default constructor is used"
       },
       {
-        "id": "SVM3",
+        "id": "GNR3",
         "preMutation": "public class Car {\n    String name;\n\n    public Car(String name) {\n        this.name = name;\n    }\n}\n\npublic class Person {\n    Car favouriteCar = new Car(\"ford\");\n\n    public void printName(String first, String last) {\n        System.out.println(first + \" \" + last);\n    }\n\n    public void main() {\n        Car bmw = ~new Car(\"bmw\");\n    }\n}",
         "postMutation": "public class Car {\n    String name;\n\n    public Car(String name) {\n        this.name = name;\n    }\n}\n\npublic class Person {\n    Car favouriteCar = new Car(\"ford\");\n\n    public void printName(String first, String last) {\n        System.out.println(first + \" \" + last);\n    }\n\n    public void main() {\n        Car bmw = ~+favouriteCar;\n    }\n}",
-        "description": "The 'bmw' car object has been selected by the mutation to be replaced with the 'favouriteCar' field variable of same type",
-        "isolation": "X"
+        "description": "The 'bmw' car object has been selected by the mutation to be replaced with the 'favouriteCar' field variable of same type"
       },
       {
-        "id": "SVM4",
+        "id": "GNR4",
         "preMutation": "public class Car {\n    String name = \"ford\";\n    String reg = \"BD51 SMR\";\n}\n\npublic class Person {\n\n    public void main() {\n        String carDetails = new Car().~name;\n    }\n}",
         "postMutation": "public class Car {\n    String name = \"ford\";\n    String reg = \"BD51 SMR\";\n}\n\npublic class Person {\n\n    public void main() {\n        String carDetails = new Car().~-reg;\n    }\n}",
-        "description": "The field access expression 'new Car().name' has been selected by the mutation and replaced with the other field declaration 'reg' in the Car class",
-        "isolation": "X"
+        "description": "The field access expression 'new Car().name' has been selected by the mutation and replaced with the other field declaration 'reg' in the Car class"
       },
       {
-        "id": "SVM5",
+        "id": "GNR5",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        int newAge = ~0;\n        newAge += 10;\n    }\n}",
         "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        int newAge = ~+age;\n        newAge += 10;\n    }\n}",
-        "description": "The variable declaration 'newAge' has been selected by the mutation and replaced with the local field variable 'age' with the same type",
-        "isolation": "X"
+        "description": "The variable declaration 'newAge' has been selected by the mutation and replaced with the local field variable 'age' with the same type"
       },
       {
-        "id": "SVM6",
+        "id": "GNR6",
         "preMutation": "public class Name {\n\n     public static String getName(String name) {\n         return \"My name is \" + name;\n     }\n}\n\npublic class Person {\n    String myName = \"Fenton\";\n\n    public void getName() {\n        String name = ~\"\";\n    }\n}",
         "postMutation": "public class Name {\n\n    public static String getName(String name) {\n        return \"My name is \" + name;\n    }\n}\n\npublic class Person {\n    String myName = \"Fenton\";\n\n    public void getName() {\n        String name = ~+Name.getName(myName);\n    }\n}",
-        "description": "The variable declaration 'name' has been selected by the mutation and replaced with the 'getName()' static method in the Name class, using the local field variable 'myName' as the parameter to this method",
-        "isolation": "X"
+        "description": "The variable declaration 'name' has been selected by the mutation and replaced with the 'getName()' static method in the Name class, using the local field variable 'myName' as the parameter to this method"
       },
       {
-        "id": "SVM7",
+        "id": "GNR7",
         "preMutation": "public class Name {\n    static String name = \"Fenton\";\n}\n\npublic class Person {\n\n    public void getName() {\n        String name = ~\"\";\n    }\n}",
         "postMutation": "public class Name {\n    static String name = \"Fenton\";\n}\n\npublic class Person {\n\n    public void getName() {\n        String name = ~+Name.name;\n    }\n}",
-        "description": "The variable declaration 'name' has been selected by the mutation and replaced with the static field variable 'name' in the Name class",
-        "isolation": "X"
+        "description": "The variable declaration 'name' has been selected by the mutation and replaced with the static field variable 'name' in the Name class"
       },
       {
-        "id": "SVM8",
+        "id": "GNR8",
         "preMutation": "public interface Age {\n\n    public static int getAge() {\n        return 22;\n    }\n}\n\npublic class Person {\n\n    public void getAge() {\n        int age = ~0;\n    }\n}",
         "postMutation": "public interface Age {\n\n    public static int getAge() {\n        return 22;\n    }\n}\n\npublic class Person {\n\n    public void getAge() {\n        int age = ~+Age.getAge();\n    }\n}",
-        "description": "The variable declaration 'age' has been selected by the mutation and replaced with the static method 'getAge()' in the Age interface",
-        "isolation": "X"
+        "description": "The variable declaration 'age' has been selected by the mutation and replaced with the static method 'getAge()' in the Age interface"
       },
       {
-        "id": "SVM9",
+        "id": "GNR9",
         "preMutation": "public interface Age {\n\n    public int getAge();\n}\n\npublic class Person {\n\n    public void getAge() {\n        int age = 0;\n    }\n}",
         "postMutation": "public interface Age {\n\n    public int getAge();\n}\n\npublic class Person {\n\n    public void getAge() {\n        int age = 0;\n    }\n}",
-        "description": "The variable declaration 'age' has been selected by the mutation. No available int type was found in the local or global scope, so the original program is returned unmodified. The Age interfaces 'getAge()' method was not chosen as the method is not static and therefore, only available to classes extending it",
-        "isolation": "X"
+        "description": "The variable declaration 'age' has been selected by the mutation. No available int type was found in the local or global scope, so the original program is returned unmodified. The Age interfaces 'getAge()' method was not chosen as the method is not static and therefore, only available to classes extending it"
       },
       {
-        "id": "SVM10",
+        "id": "GNR10",
         "preMutation": "public interface Age {\n    static int age = 10;\n}\n\npublic class Person {\n\n    public void getAge() {\n        int age = ~0;\n    }\n}",
         "postMutation": "public interface Age {\n    static int age = 10;\n}\n\npublic class Person {\n\n    public void getAge() {\n        int age = ~+Age.age;\n    }\n}",
-        "description": "The variable declaration 'age' has been selected by the mutation and replaced with the static field variable 'age' in the Age interface",
-        "isolation": "X"
+        "description": "The variable declaration 'age' has been selected by the mutation and replaced with the static field variable 'age' in the Age interface"
       },
       {
-        "id": "SVM11",
+        "id": "GNR11",
         "preMutation": "public interface Age {\n    int age = 10;\n}\n\npublic class Person {\n\n    public void getAge() {\n        int age = ~0;\n    }\n}",
         "postMutation": "public interface Age {\n    int age = 10;\n}\n\npublic class Person {\n\n    public void getAge() {\n        int age = ~+Age.age;\n    }\n}",
-        "description": "The variable declaration 'age' has been selected by the mutation and replaced with the field variable 'age' in the Age interface. Although this field variable is not explicitly static, field variables in interfaces are always static regardless",
-        "isolation": "X"
+        "description": "The variable declaration 'age' has been selected by the mutation and replaced with the field variable 'age' in the Age interface. Although this field variable is not explicitly static, field variables in interfaces are always static regardless"
       },
       {
-        "id": "SVM12",
+        "id": "GNR12",
         "preMutation": "public abstract class Colour {\n\n    public static String getColour() {\n        return \"purple\";\n    }\n}\n\npublic class Person {\n\n    public void getColour() {\n        String colour = ~\"red\";\n    }\n}",
         "postMutation": "public abstract class Colour {\n\n    public static String getColour() {\n        return \"purple\";\n    }\n}\n\npublic class Person {\n\n    public void getColour() {\n        String colour = ~+Colour.getColour();\n    }\n}",
-        "description": "The variable declaration 'colour' has been selected by the mutation and replaced with the static method 'getColour()' in the Colour abstract class",
-        "isolation": "X"
+        "description": "The variable declaration 'colour' has been selected by the mutation and replaced with the static method 'getColour()' in the Colour abstract class"
       },
       {
-        "id": "SVM13",
+        "id": "GNR13",
         "preMutation": "public abstract class Colour {\n\n    public String getColour() {\n        return \"purple\";\n    }\n}\n\npublic class Person {\n\n    public void getColour() {\n        String colour = \"red\";\n    }\n}",
         "postMutation": "public abstract class Colour {\n\n    public String getColour() {\n        return \"purple\";\n    }\n}\n\npublic class Person {\n\n    public void getColour() {\n        String colour = \"red\";\n    }\n}",
-        "description": "The variable declaration 'colour' has been selected by the mutation. No available String type was found in the local or global scope, so the original program is returned unmodified. The abstract class Colour, has a method 'getColour()' with a String return type, as this method is non-static it is only available to classes which extend Colour and therefore, not selected by the mutation",
-        "isolation": "X"
+        "description": "The variable declaration 'colour' has been selected by the mutation. No available String type was found in the local or global scope, so the original program is returned unmodified. The abstract class Colour, has a method 'getColour()' with a String return type, as this method is non-static it is only available to classes which extend Colour and therefore, not selected by the mutation"
       },
       {
-        "id": "SVM14",
+        "id": "GNR14",
         "preMutation": "public abstract class Colour {\n    public abstract String getColour();\n}\n\npublic class Person {\n\n    public void getColour() {\n        String colour = \"red\";\n    }\n}",
         "postMutation": "public abstract class Colour {\n    public abstract String getColour();\n}\n\npublic class Person {\n\n    public void getColour() {\n        String colour = \"red\";\n    }\n}",
-        "description": "The variable declaration 'colour' has been selected by the mutation. No available String type was found in the local or global scope, so the original program is returned unmodified. The abstract class Colour, has an abstract method 'getColour()' with the String return type needed, this method however, provides no implementation and is only available to classes which extend Colour, which is why the mutation will not select it for switching",
-        "isolation": "X"
+        "description": "The variable declaration 'colour' has been selected by the mutation. No available String type was found in the local or global scope, so the original program is returned unmodified. The abstract class Colour, has an abstract method 'getColour()' with the String return type needed, this method however, provides no implementation and is only available to classes which extend Colour, which is why the mutation will not select it for switching"
       },
       {
-        "id": "SVM15",
+        "id": "GNR15",
         "preMutation": "public abstract class Colour {\n    static String colour = \"purple\";\n}\n\npublic class Person {\n\n    public void getColour() {\n        String colour = ~\"red\";\n    }\n}",
         "postMutation": "public abstract class Colour {\n    static String colour = \"purple\";\n}\n\npublic class Person {\n\n    public void getColour() {\n        String colour = ~+Colour.colour;\n    }\n}",
-        "description": "The variable declaration 'colour' has been selected by the mutation and replaced with the static field variable 'colour' in the Colour abstract class",
-        "isolation": "X"
+        "description": "The variable declaration 'colour' has been selected by the mutation and replaced with the static field variable 'colour' in the Colour abstract class"
       },
       {
-        "id": "SVM16",
+        "id": "GNR16",
         "preMutation": "public abstract class Colour {\n    String colour = \"purple\";\n}\n\npublic class Person {\n\n    public void getColour() {\n        String colour = ~\"red\";\n    }\n}",
         "postMutation": "public abstract class Colour {\n    String colour = \"purple\";\n}\n\npublic class Person {\n\n    public void getColour() {\n        String colour = ~+Colour.colour;\n    }\n}",
-        "description": "The variable declaration 'colour' has been selected by the mutation and replaced with the field variable 'colour' in the Colour abstract class. Although this field variable is not explicitly static, field variables in abstract classes are always static regardless",
-        "isolation": "X"
+        "description": "The variable declaration 'colour' has been selected by the mutation and replaced with the field variable 'colour' in the Colour abstract class. Although this field variable is not explicitly static, field variables in abstract classes are always static regardless"
       },
       {
-        "id": "SVM17",
+        "id": "GNR17",
         "preMutation": "public enum Emotion {\n    ANGRY,\n    HAPPY,\n    SAD,\n    CALM\n}\n\npublic class Person {\n    Emotion emotion = Emotion.~CALM;\n\n    public void getEmotion() {\n        System.out.println(\"Feeling \" + emotion + \" today\");\n    }\n}",
         "postMutation": "public enum Emotion {\n    ANGRY,\n    HAPPY,\n    SAD,\n    CALM\n}\n\npublic class Person {\n    Emotion emotion = Emotion.~+HAPPY;\n\n    public void getEmotion() {\n        System.out.println(\"Feeling \" + emotion + \" today\");\n    }\n}",
-        "description": "The field access expression 'Emotion.CALM' in the Person class has been selected by the mutation. Emotion is an enum declared outside the Person class, in this example a random Emotion enum constant in this case, 'Emotion.HAPPY' was chosen by the mutation for the switch",
-        "isolation": "X"
+        "description": "The field access expression 'Emotion.CALM' in the Person class has been selected by the mutation. Emotion is an enum declared outside the Person class, in this example a random Emotion enum constant in this case, 'Emotion.HAPPY' was chosen by the mutation for the switch"
       },
       {
-        "id": "SVM18",
+        "id": "GNR18",
         "preMutation": "public class Person {\n\n    enum Emotion {\n        ANGRY,\n        HAPPY,\n        SAD,\n        CALM\n    }\n    \n    Emotion emotion = Emotion.~CALM;\n\n    public void getEmotion() {\n        System.out.println(\"Feeling \" + emotion + \" today\");\n    }\n}   ",
         "postMutation": "public class Person {\n\n    enum Emotion {\n        ANGRY,\n        HAPPY,\n        SAD,\n        CALM\n    }\n\n    Emotion emotion = Emotion.~+SAD;\n\n    public void getEmotion() {\n        System.out.println(\"Feeling \" + emotion + \" today\");\n    }\n}",
-        "description": "The field access expression 'Emotion.CALM' in the Person class has been selected by the mutation. Emotion is an enum now declared inside the Person class, in this example a random Emotion enum constant in this case, 'Emotion.SAD' was chosen by the mutation for the switch. The declaration of an enum inside or outside a class does not matter to the mutation",
-        "isolation": "X"
+        "description": "The field access expression 'Emotion.CALM' in the Person class has been selected by the mutation. Emotion is an enum now declared inside the Person class, in this example a random Emotion enum constant in this case, 'Emotion.SAD' was chosen by the mutation for the switch. The declaration of an enum inside or outside a class does not matter to the mutation"
       },
       {
-        "id": "SVM19",
+        "id": "GNR19",
         "preMutation": "public class Person {\n    public main() {\n        \n    }\n}",
         "postMutation": "public class Person {\n    public main() {\n        \n    }\n}",
-        "description": "If there are no available, variable declarations, method call expressions, object creation expressions or field access expressions, then the mutation returns the program unmodified.",
-        "isolation": "X"
+        "description": "If there are no available, variable declarations, method call expressions, object creation expressions or field access expressions, then the mutation returns the program unmodified."
+      },
+      {
+        "id": "GNR20",
+        "preMutation": "public class Person {\n    public main() {\n        int age = 22;\n        int newAge = 32;\n    }\n}",
+        "postMutation": "public class Person {\n    public main() {\n        int age = 22;\n        int newAge = 32;\n    }\n}",
+        "description": "The variable declaration 'age' has been chosen by the mutation. The variable declaration 'newAge' is of the same type int as required, however, cannot be collected as its defintion exists below the 'age' declaration and therefore, referencing the 'newAge' variable would result in a variable not found exception"
       }
     ]
   },
 
-  "WRM": {
-    "mutationDescription": "X",
+  "SPM": {
+    "mutationDescription": "The Switch Parameter (SPM) mutation is a child of GNR, with this mutation being able to add and remove to the parameters of methods and object creation calls to use their overloaded alternatives.",
+    "implementationDetails": "The GNR mutation can satisfy the requirements of this mutation so the implementation details are left to the parent.",
     "examples": [
       {
-        "id": "WRM1",
+        "id": "SPM1",
         "preMutation": "public class Person {\n\n    public String getName() {\n        return \"Fenton Reid\";\n    }\n    \n    public String getName(String middleName) {\n        return \"Fenton \" + middleName + \" Reid\";\n    }\n\n    public void main() {\n        String name = ~getName(\"Saoirse\");\n    }\n}",
         "postMutation": "public class Person {\n\n    public String getName() {\n        return \"Fenton Reid\";\n    }\n\n    public String getName(String middleName) {\n        return \"Fenton \" + middleName + \" Reid\";\n    }\n\n    public void main() {\n        String name = ~+getName();\n    }\n}",
-        "description": "Original 'getName(String middleName)' method call replaced with overloaded method which removes the 'name' parameter",
-        "isolation": "X"
+        "description": "Original 'getName(String middleName)' method call replaced with overloaded method which removes the 'name' parameter"
       },
       {
-        "id": "WRM2",
+        "id": "SPM2",
         "preMutation": "public class Person {\n    String middleName = \"Saoirse\";\n\n    public String getName() {\n        return \"Fenton Reid\";\n    }\n\n    public String getName(String middleName) {\n        return \"Fenton \" + middleName + \" Reid\";\n    }\n\n    public void main() {\n        String name = ~getName();\n    }\n}",
         "postMutation": "public class Person {\n    String middleName = \"Saoirse\";\n\n    public String getName() {\n        return \"Fenton Reid\";\n    }\n\n    public String getName(String middleName) {\n        return \"Fenton \" + middleName + \" Reid\";\n    }\n\n    public void main() {\n        String name = ~+getName(middleName);\n    }\n}",
-        "description": "Original 'getName()' method call replaced with overloaded method which adds a 'middleName' parameter from the method calls local scope",
-        "isolation": "X"
+        "description": "Original 'getName()' method call replaced with overloaded method which adds a 'middleName' parameter from the method calls local scope"
       },
       {
-        "id": "WRM3",
+        "id": "SPM3",
         "preMutation": "public class Person {\n    String middleName = \"Saoirse\";\n\n    public String getName(String first, String middle, String last) {\n        return \"Fenton\" + middle + \"Reid\";\n    }\n\n    public void main() {\n        String name = ~getName(\"Fenton\", middleName, \"Reid\");\n    }\n}",
         "postMutation": "public class Person {\n    String middleName = \"Saoirse\";\n\n    public String getName(String first, String middle, String last) {\n        return \"Fenton\" + middle + \"Reid\";\n    }\n\n    public void main() {\n        String name = ~+getName(middleName, middleName, middleName);\n    }\n}",
-        "description": "Original 'getName()' method call is replaced with the same method where the parameters of this method are randomly determined",
-        "isolation": "X"
+        "description": "Original 'getName()' method call is replaced with the same method where the parameters of this method are randomly determined"
       },
       {
-        "id": "WRM4",
+        "id": "SPM4",
         "preMutation": "public class Person {\n    String middleName = \"Saoirse\";\n\n    public String getName() {\n        return \"Fenton Reid\";\n    }\n\n    public String[] getName() {\n        return new String[] { \"Fenton\", \"Reid\" };\n    }\n\n    public void main() {\n        String name = getName();\n    }\n}\n",
         "postMutation": "public class Person {\n    String middleName = \"Saoirse\";\n\n    public String getName() {\n        return \"Fenton Reid\";\n    }\n\n    public String[] getName() {\n        return new String[] { \"Fenton\", \"Reid\" };\n    }\n\n    public void main() {\n        String name = getName();\n    }\n}\n",
-        "description": "Method 'getName()' has an overloaded method with a different return type of 'String[]' which does not return a suitable value to replace the variable declaration 'String name'. In this case the original method 'getName()' with return type of String is used ",
-        "isolation": "X"
+        "description": "Method 'getName()' has an overloaded method with a different return type of 'String[]' which does not return a suitable value to replace the variable declaration 'String name'. In this case the original method 'getName()' with return type of String is used "
       },
       {
-        "id": "WRM5",
+        "id": "SPM5",
         "preMutation": "public class Person {\n    String name = \"\";\n\n    public Person(String first, String last) {\n        this.name = first + \" \" + last;\n    }\n\n    public Person(String first, String middle, String last) {\n        this.name = first + \" \" + middle + \" \" + last;\n    }\n\n    public void main() {\n        String first = \"Fenton\";\n        String middle = \"Saoirse\";\n        String last =  \"Reid\";\n\n        Person person = ~new Person(first, middle, last);\n    }\n}",
         "postMutation": "public class Person {\n    String name = \"\";\n\n    public Person(String first, String last) {\n        this.name = first + \" \" + last;\n    }\n\n    public Person(String first, String middle, String last) {\n        this.name = first + \" \" + middle + \" \" + last;\n    }\n\n    public void main() {\n        String first = \"Fenton\";\n        String middle = \"Saoirse\";\n        String last = \"Reid\";\n\t\t\n        Person person = ~+new Person(first, last);\n    }\n}",
-        "description": "Original 'Person(String first, String middle, String last)' constructor is replaced with an overloaded constructor which removes the 'middle' parameter. All parameters are determined randomly by nodes in local scope and therefore, could be different per run  ",
-        "isolation": "X"
+        "description": "Original 'Person(String first, String middle, String last)' constructor is replaced with an overloaded constructor which removes the 'middle' parameter. All parameters are determined randomly by nodes in local scope and therefore, could be different per run  "
       },
       {
-        "id": "WRM6",
+        "id": "SPM6",
         "preMutation": "public class Person {\n    String name = \"\";\n\t\n    public Person(String first, String last) {\n        this.name = first + \" \" + last;\n    }\n\n    public Person(String first, String middle, String last) {\n        this.name = first + \" \" + middle + \" \" + last;\n    }\n\n    public void main() {\n        String first = \"Fenton\";\n        String middle = \"Saoirse\";\n        String last =  \"Reid\";\n\n        Person person = ~new Person(first, last);\n    }\n}\n",
         "postMutation": "public class Person {\n    String name = \"\";\n\n    public Person(String first, String last) {\n        this.name = first + \" \" + last;\n    }\n\n    public Person(String first, String middle, String last) {\n        this.name = first + \" \" + middle + \" \" + last;\n    }\n\n    public void main() {\n        String first = \"Fenton\";\n        String middle = \"Saoirse\";\n        String last = \"Reid\";\n\t\t\n        Person person = ~+new Person(first, middle, last);\n    }\n}",
-        "description": "Original 'Person (String first, String last)' constructor is replaced with an overloaded constructor which adds a 'middleName' parameter from the object creation expressions local scope",
-        "isolation": "X"
+        "description": "Original 'Person (String first, String last)' constructor is replaced with an overloaded constructor which adds a 'middleName' parameter from the object creation expressions local scope"
       },
       {
-        "id": "WRM7",
+        "id": "SPM7",
         "preMutation": "public class Person {\n    String name = \"\";\n\n    public Person(String first, String last) {\n        this.name = first + \" \" + last;\n    }\n\n    public void main() {\n        String first = \"Fenton\";\n        String last =  \"Reid\";\n\n        Person person = ~new Person(first, last);\n    }\n}",
         "postMutation": "public class Person {\n    String name = \"\";\n\n    public Person(String first, String last) {\n        this.name = first + \" \" + last;\n    }\n\n    public void main() {\n        String first = \"Fenton\";\n        String last =  \"Reid\";\n\t\t\n        Person person = ~+new Person(last, first);\n    }\n}",
-        "description": "Original 'getName(String first, String last)' constructor has no overloaded constructors, so the original constructor is used. All parameters are determined randomly by nodes in the local scope of the program.",
-        "isolation": "X"
+        "description": "Original 'getName(String first, String last)' constructor has no overloaded constructors, so the original constructor is used. All parameters are determined randomly by nodes in the local scope of the program."
       }
     ]
   },
 
   "BEM": {
-    "mutationDescription": "Boolean Expression Manipulator...",
+    "mutationDescription": "The Boolean Expression Modification (BEM) mutation is a child of the Boolean And Relational (BAR) mutation, with the goal of switching the boolean and relational operators of expressions<br>and adding and removing negation to child expressions.<br><br>Expressions found in if, while and ternary statements are collected with boolean variables and fields and boolean return types collected also.",
+    "implementationDetails": "(1) Boolean expressions in the program are collected, for example (x > 5 && y > 5)<br>(2) If a valid expression could not be found then return the program unmodified<br>(3) A random expression from the list of available expressions is chosen and different actions are taken depending on the instance type<br>(4) If the expression is a Unary expression then remove the unary expression and get the expression inside<br>(5) If the expression is a Binary expression then the mutation has two options<br>&emsp;(5.1) 50% chance to modify the binary expressions operator<br>&emsp;&emsp;(5.1.1) Generally, if the current operator of the expression is a boolean operator (&&, ||) then a random boolean operator is chosen<br>&emsp;&emsp;(5.1.2) Generally, if the current operator of the expression is a relational operator (!=, <=, ...) then a random relational operator is chosen<br>&emsp;&emsp;(5.1.3) If the binary expression is a string then .equals() is used for the relational operator and if a boolean then the relational operators are limited to == and !=<br>&emsp;(5.2) 50% chance to enclose the expression in a negation operator<br>(6) If the expression is a BooleanLiteralExpr e.g. a 'true' or 'false' value then the boolean literal is flipped<br>(7) The modified program is returned",
     "examples": [
       {
         "id": "BEM1",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~if (age > 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~+if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
-        "description": "The binary expression 'age == 20' is switched with a random relational operator of '!=' in this case",
-        "isolation": "X"
+        "description": "The binary expression 'age == 20' is switched with a random relational operator of '!=' in this case"
       },
       {
         "id": "BEM2",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~if (age > 20 && age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~+if (age > 20 || age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
-        "description": "The binary expression 'age > 20 && age < 30' is switched with a random boolean operator of '||' in this case ",
-        "isolation": "X"
+        "description": "The binary expression 'age > 20 && age < 30' is switched with a random boolean operator of '||' in this case "
       },
       {
         "id": "BEM3",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public boolean inTwenties() {\n        if (age > 20 && age < 30) {\n            return true;\n        }\n\n        return ~false;\n    }\n}",
         "postMutation": "public class Person {\n    int age = 22;\n\n    public boolean inTwenties() {\n        if (age > 20 && age < 30) {\n            return true;\n        }\n\n        return ~+true;\n    }\n}",
-        "description": "The final return statement with a boolean literal value of 'false' has been flipped to 'true' ",
-        "isolation": "X"
+        "description": "The final return statement with a boolean literal value of 'false' has been flipped to 'true' "
       },
       {
         "id": "BEM4",
         "preMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n        String message = ~favouriteNumber > 0 && favouriteNumber <= 6 ? \"Are you a dice?\" : \"Hmm, not a dice!\";\n        System.out.println(message);\n    }\n}",
         "postMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n        String message = ~+favouriteNumber > 0 || favouriteNumber <= 6 ? \"Are you a dice?\" : \"Hmm, not a dice!\";\n        System.out.println(message);\n    }\n}",
-        "description": "The ternary operator's boolean operator has been switched in this instance ",
-        "isolation": "X"
+        "description": "The ternary operator's boolean operator has been switched in this instance "
       },
       {
         "id": "BEM5",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~if (age > 20 && age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\t\n        ~+if (!(age > 20) && age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
-        "description": "The binary expression '(age > 20 && age < 30)' has negation added to its first expression 'age > 20'",
-        "isolation": "X"
+        "description": "The binary expression '(age > 20 && age < 30)' has negation added to its first expression 'age > 20'"
       },
       {
         "id": "BEM6",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\t\n        ~if (!(age > 20) && age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n\n    int age = 22;\n\n    public void main() {\n\n        ~+if ((age > 20) && age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
-        "description": "The unary expression '!(age > 20)' has been removed to leave only the expression. The expression is wrapped in an enclosed expression so that the boolean logic enclosed in the parenthesis order is unchanged",
-        "isolation": "X"
+        "description": "The unary expression '!(age > 20)' has been removed to leave only the expression. The expression is wrapped in an enclosed expression so that the boolean logic enclosed in the parenthesis order is unchanged"
       }
     ]
   },
 
-  "BERRemoval": {
-    "mutationDescription": "...",
+  "BERReduction": {
+    "mutationDescription": "The BER Reduction mutation is a child of the Boolean Expansion and Reduction mutation, with the goal of reducing compound boolean expressions in the program.<br>Binary expressions in: if, while and for loops can be collected with boolean variables and fields and boolean return types collected also.",
+    "implementationDetails": "(1) Binary expression parents are collected in the program, for example (x > 5 && y > 5 && z > 5) is a binary expr parent, where (y > 5 && z > 5) is a binary expression child and is not collected<br>(2) If a valid expression could not be found then return the program unmodified<br>(3) The parent binary expression is split into child nodes in the example above these would be: x > 5, y > 5 and z > 5<br>(4) A child is picked at random such as the child: x > 5<br>(5) If the parent to the child is a binary expression then the siblings of the child are collected through the parent and the child node is removed<br>(6) If the child is wrapped in a unary, ! or enclosed expression, () then the binary expression of the child is found and the same process as step five is applied",
     "examples": [
       {
-        "id": "BERRemoval1",
+        "id": "BERReduction1",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~if (age > 20 && age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~-if (age < 30) {\n            System.out.println(\"In your 20's!\");\n        }\n    }\n}",
-        "description": "",
-        "isolation": "The compound expression 'age > 20 && age < 30' has one expression removed at random in this case 'age > 20'"
+        "description": "The expression 'age > 20 && age < 30' has been selected by the mutation at random, and the 'age > 20' child has been selected for removal"
       },
       {
-        "id": "BERRemoval2",
+        "id": "BERReduction2",
         "preMutation": "public class Person {\n\n    int age = 22;\n\n    public void main() {\n\n         if (age > 20) {\n            System.out.println(\"You are over 20 years old!\");\n        }\n    }\n}",
         "postMutation": " public class Person {\n\n    int age = 22;\n\n    public void main() {\n\n        if (age > 20) {\n            System.out.println(\"You are over 20 years old!\");\n        }\n    }\n}",
-        "description": "The expression 'age > 20' is not a compound expression so the expression cannot be removed, therefore the Compilation Unit is returned unmodified",
-        "isolation": "X"
+        "description": "The expression 'age > 20' is not a compound expression so the expression cannot be removed, therefore the Compilation Unit is returned unmodified"
       },
       {
-        "id": "BERRemoval3",
+        "id": "BERReduction3",
         "preMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n        \n        String message = ~favouriteNumber > 0 && favouriteNumber <= 6 ? \"are you a dice\" : \"hmm, not a dice!\";\n        System.out.println(message);\n    }\n}",
         "postMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n        \n        String message = ~+favouriteNumber > 0 ? \"are you a dice\" : \"hmm, not a dice!\";\n        System.out.println(message);\n    }\n}",
-        "description": "The ternary operators compound expression 'favouriteNumber > 0 && favouriteNumber <= 6' has a random expression removed in this case 'favouriteNumber <= 6'",
-        "isolation": "X"
+        "description": "The ternary operators compound expression 'favouriteNumber > 0 && favouriteNumber <= 6' has a random expression removed in this case 'favouriteNumber <= 6'"
       },
       {
-        "id": "BERRemoval4",
+        "id": "BERReduction4",
         "preMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n\n        String message = ~favouriteNumber > 0 ? \"Are you a dice?\" : \"Hmm, not a dice!\";\n        System.out.println(message);\n    }\n}",
         "postMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n\n        String message = ~+\"Are you a dice?\";\n        System.out.println(message);\n    }\n}",
-        "description": "The ternary operator 'favouriteNumber > 0 && favouriteNumber <= 6' is not a compound expression, in these instances the BER Removal mutation will keep the true assignment of the ternary operator",
-        "isolation": "X"
+        "description": "The ternary operator 'favouriteNumber > 0 && favouriteNumber <= 6' is not a compound expression, in these instances the BER Reduction mutation will keep the true assignment of the ternary operator"
       },
       {
-        "id": "BERRemoval5",
+        "id": "BERReduction5",
         "preMutation": "public class Person {\n    String pendingEmployment = \"yes\";\n    boolean isEmployed = true;\n    boolean isCitizen = true;\n\n    public boolean canWork() {\n        \n        ~return !(isCitizen && (isEmployed || pendingEmployment.equals(\"yes\")));\n    }\n}",
         "postMutation": "public class Person {\n    String pendingEmployment = \"yes\";\n    boolean isEmployed = true;\n    boolean isCitizen = true;\n\n    public boolean canWork() {\n        \n        ~-return !(isCitizen && (isEmployed));\n    }\n}",
-        "description": "In this example a more complex expression is removed that is a part of the return statement. The 'string equality comparison is removed' and parenthesis is left, to retain negation if present",
-        "isolation": ""
+        "description": "In this example a more complex expression is removed that is a part of the return statement. The 'string equality comparison is removed' and parenthesis is left, to retain negation if present"
       }
     ]
   },
 
   "BERExpansion": {
-    "mutationDescription": "...",
+    "mutationDescription": "The BER Expansion mutation is a child of the Boolean Expansion and Reduction mutation, with the goal of adding to boolean expressions in the program.<br>Expressions found in if, while and ternary statements are collected with boolean variables and fields and boolean return types collected also.",
+    "implementationDetails": "(1) Boolean expressions are collected in the program for example: (x > 5 && y > 5)<br>(2) If no expressions where found then the original program is returned unmodified<br>(3) A random expression from the program is split into child nodes in the example above these would be: x > 5, y > 5<br>(4) A child is picked at random such as the child: x > 5 and a 50/50 decision is made whether to add a new expression to the left or right side of this child<br>(5) Determine what expression to add: single expression with and without negation or a binary expression<br>(6) There is a 25% chance that a single expression of type binary will be added to the child from the local or global scope<br>(7) There is a 25% chance that a single expression of type binary with negation will be added to the child from the local or global scope<br>(8) There is a 50% chance that a binary expression will be added to the program<br>&emsp;(8.1) All types in the local/global scope of the child are collected and types with less than two nodes are discarded<br>&emsp;(8.2) A random type is chosen if the number of valid types is greater than zero, if not then the program is returned unmodified<br>&emsp;(8.3) Two nodes with the same type are set as the left and right nodes of the binary expression<br>&emsp;(8.4) The relational operator is randomised, if the type of node is boolean then only == and != are selected and if the type is String then the .equals() method is used for comparison<br>(9) Now that a new expression has been formed a random boolean operator is selected to join the expression and child and the original expression is updated",
     "examples": [
       {
         "id": "BERExpansion1",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        boolean isCitizen = true;\n\n        ~if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}   ",
         "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        boolean isCitizen = true;\n\t\t\n        ~+if (age == 20 && !isCitizen) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
-        "description": "The single expression 'age == 20' has a 25% chance to add a single expression with negation. In this example the boolean type 'isCitizen' was negated and added to the right hand side of the original expression",
-        "isolation": "X"
+        "description": "The single expression 'age == 20' has a 25% chance to add a single expression with negation. In this example the boolean type 'isCitizen' was negated and added to the right hand side of the original expression"
       },
       {
         "id": "BERExpansion2",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        boolean isCitizen = true;\n\n        ~if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        boolean isCitizen = true;\n\n        ~+if (isCitizen || age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}\n",
-        "description": "The single expression 'age == 20' has a 25% chance to add a single expression without negation. In this example the boolean type 'isCitizen' and has been combined to the left hand side of the expression",
-        "isolation": "X"
+        "description": "The single expression 'age == 20' has a 25% chance to add a single expression without negation. In this example the boolean type 'isCitizen' and has been combined to the left hand side of the expression"
       },
       {
         "id": "BERExpansion3",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        int tenYearsOlder = age + 10;\n\n        ~if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}\n",
         "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        int tenYearsOlder = age + 10;\n        \n        ~+if (age == 20 || tenYearsOlder <= age) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
-        "description": "The single expression 'age == 20' has a 50% chance to add a binary expression. In this example the generated binary expression has been added to right of the original expression, combining 'tenYearsOlder' and 'age' integer variables with a random relational operator, and combining both expressions together with a random boolean operator",
-        "isolation": "X"
+        "description": "The single expression 'age == 20' has a 50% chance to add a binary expression. In this example the generated binary expression has been added to right of the original expression, combining 'tenYearsOlder' and 'age' integer variables with a random relational operator, and combining both expressions together with a random boolean operator"
       },
       {
         "id": "BERExpansion4",
         "preMutation": "public class Person {\n    String first = \"Fenton\";\n    String last = \"Reid\";\n\n    public void main() {\n\n        ~if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n    String first = \"Fenton\";\n    String last = \"Reid\";\n\n    public void main() {\n    \n        ~+if (first.equals(last) || age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
-        "description": "The single expression 'age == 20' has a 50% chance to add a binary expression. Since the two nodes chosen for comparison are string types the .equals() method is used for comparison rather than a standard relational operator.",
-        "isolation": "X"
+        "description": "The single expression 'age == 20' has a 50% chance to add a binary expression. Since the two nodes chosen for comparison are string types the .equals() method is used for comparison rather than a standard relational operator."
       },
       {
         "id": "BERExpansion5",
         "preMutation": "public class Person {\n\n    public void main() {\n\n        if (true) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n\n    public void main() {\n\n        if (true) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
-        "description": "No expressions where found in the program so no valid mutation can take place, so the original program is returned",
-        "isolation": "X"
+        "description": "No expressions where found in the program so no valid mutation can take place, so the original program is returned"
       },
       {
         "id": "BERExpansion6",
         "preMutation": "public class Person {\n\n    public void main() {\n        int age = 22;\n\n        if (age > 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n\n    public void main() {\n        int age = 22;\n\n        if (age > 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
-        "description": "No valid mutation can take place as there is no valid boolean type for a single expression and only one local node for a binary expression. The original program is returned in this instance",
-        "isolation": "X"
+        "description": "No valid mutation can take place as there is no valid boolean type for a single expression and only one local node for a binary expression. The original program is returned in this instance"
       },
       {
         "id": "BERExpansion7",
         "preMutation": "public class Person {\n    String pendingEmployment = \"yes\";\n    boolean isEmployed = true;\n    boolean isCitizen = true;\n\n    public boolean canWork() {\n        \n        ~return !(isCitizen && (isEmployed || pendingEmployment.equals(\"yes\")));\n    }\n}",
         "postMutation": "public class Person {\n    String pendingEmployment = \"yes\";\n    boolean isEmployed = true;\n    boolean isCitizen = true;\n\n    public boolean canWork() {\n\n        ~+return !(isCitizen || isEmployed != isCitizen && (isEmployed || pendingEmployment.equals(\"yes\")));\n    }\n}",
-        "description": "In this example the boolean expression is more complicated. The mutation has targeted the return statement in this example, however, both boolean field variables could also be targeted. In this case the boolean operator is restricted to == and != since we are dealing with boolean types",
-        "isolation": "X"
+        "description": "In this example the boolean expression is more complicated. The mutation has targeted the return statement in this example, however, both boolean field variables could also be targeted. In this case the boolean operator is restricted to == and != since we are dealing with boolean types"
       }
     ]
   },
 
   "LRR": {
-    "mutationDescription": "...",
+    "mutationDescription": "The Line Relocation and Removal (LRR) mutation combines the functionality of both the LRRelocation and LRRemoval mutations, with the mutation being able to; move statements in the same method around, and remove specific nodes in the program as a whole around too.",
+    "implementationDetails": "(1) Determine which mutation to choose from, 50/50 for either LRRelocation or LRRemoval<br>(2) Run the mutation and return the modified program back",
     "inherits": ["LRRelocation", "LRRemoval"],
     "examples": []
   },
 
   "LRRemoval": {
-    "mutationDescription": "...",
+    "mutationDescription": "The LRRemoval mutation is a child of the Line Relocation and Removal (LRR) mutation, with the goal of removing statements. These include, if, while, do-while, for, try and switch statements, methods calls, variable declarations, throw, break, continue and return keywords.",
+    "implementationDetails": "(1) Collect from the program all nodes that are specified in the LRR 'getAllowedNodes()' method<br>(2) If a valid node could not be found then return the program unmodified<br>(3) Pick a random node from the list of available nodes. Special rules exist for the Try and IF statement<br>&emsp;(3.1) If the random node is a Try statement, then the try statement, catch and/or finally statements are collected<br>&emsp;&emsp;(3.1.1) A catch block is only collected if there exists more than one catch or a finally statement is present<br>&emsp;&emsp;(3.1.2) A random statement is removed from the collected list with there always being atleast a try statement present<br> &emsp;(3.2) If the random node is an IF statement, if an ELSE statement is present then the else statement is removed otherwise, the IF statement is removed<br>(4) All other nodes are removed without issue and the modified program is returned",
     "examples": [
       {
         "id": "LRRemoval1",
         "preMutation": "public class Person {\n    ~int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n} ",
         "postMutation": "public class Person {\n    ~-int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n        }\n    }\n} ",
-        "description": "The field declaration 'age = 22' has been chosen at random by the mutation and removed",
-        "isolation": "X"
+        "description": "The field declaration 'age = 22' has been chosen at random by the mutation and removed"
       },
       {
         "id": "LRRemoval2",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~if (age == 20) {\n            ~System.out.println(\"Over 20 years old!\");\n\n        ~} else if (age > 30) {\n            ~System.out.println(\"Over 30 years old!\");\n\n        ~} else {\n            ~System.out.println(\"Not sure, what age you are!\");\n        ~}\n    }\n}",
         "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~-if (age == 20) {\n            ~-System.out.println(\"Over 20 years old!\");\n\n        ~-} else if (age > 30) {\n            ~-System.out.println(\"Over 30 years old!\");\n\n        ~-} else {\n            ~-System.out.println(\"Not sure, what age you are!\");\n        ~-}\n    }\n}",
-        "description": "The IF statement has been chosen at random and removed by the mutation, all statements below this if statement, e.g. the else-if and else branches are removed also",
-        "isolation": "X"
+        "description": "The IF statement has been chosen at random and removed by the mutation, all statements below this if statement, e.g. the else-if and else branches are removed also"
       },
       {
         "id": "LRRemoval3",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n\n        ~} else if (age > 30) {\n            ~System.out.println(\"Over 30 years old!\");\n\n        } else {\n            System.out.println(\"Not sure, what age you are!\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n\n        ~-} else if (age > 30) {\n            ~-System.out.println(\"Over 30 years old!\");\n\n        } else {\n            System.out.println(\"Not sure, what age you are!\");\n        }\n    }\n}",
-        "description": "The else-if branch of the IF statement has been chosen at random and removed by the mutation. The else-if statement is completely removed",
-        "isolation": "X"
+        "description": "The else-if branch of the IF statement has been chosen at random and removed by the mutation. The else-if statement is completely removed"
       },
       {
         "id": "LRRemoval4",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n\n        } else if (age > 30) {\n            System.out.println(\"Over 30 years old!\");\n            \n        } ~else {\n            ~System.out.println(\"Not sure, what age you are!\");\n        ~}\n    }\n}",
         "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n\n        } else if (age > 30) {\n            System.out.println(\"Over 30 years old!\");\n            \n        } ~-else {\n            ~-System.out.println(\"Not sure, what age you are!\");\n        ~-}\n    }\n}",
-        "description": "The else branch of the IF statement has been chosen at random and removed by the mutation. The else statement is completely removed",
-        "isolation": "X"
+        "description": "The else branch of the IF statement has been chosen at random and removed by the mutation. The else statement is completely removed"
       },
       {
         "id": "LRRemoval5",
         "preMutation": "public class Person {\n    String[] hobbies = new String[] { \"Skiing\", \"Gaming\", \"Swimming\" };\n\n    public void main() {\n\n        ~for (String hobby : hobbies) {\n            ~System.out.println(\"I like this hobby: \" + hobby);\n        ~}\n    }\n}",
         "postMutation": "public class Person {\n    String[] hobbies = new String[] { \"Skiing\", \"Gaming\", \"Swimming\" };\n\n    public void main() {\n\n        ~-for (String hobby : hobbies) {\n            ~-System.out.println(\"I like this hobby: \" + hobby);\n        ~-}\n    }\n}",
-        "description": "The enhanced-for loop has been chosen at random and removed by the mutation. The enhanced-for loops body has been completely removed",
-        "isolation": "X"
+        "description": "The enhanced-for loop has been chosen at random and removed by the mutation. The enhanced-for loops body has been completely removed"
       },
       {
         "id": "LRRemoval6",
         "preMutation": "public class Person {\n    int age = 20;\n\n    public void main() {\n\n        int i = 0;\n        ~while (i < age) {\n            ~System.out.println(\"You are not: \" + i);\n            ~i++;\n        ~}\n    }\n}",
         "postMutation": "public class Person {\n    int age = 20;\n\n    public void main() {\n\n        int i = 0;\n        ~-while (i < age) {\n            ~-System.out.println(\"You are not: \" + i);\n            ~-i++;\n        ~-}\n    }\n}",
-        "description": "The while loop has been chosen at random and removed by the mutation. The while loops body has been completely removed",
-        "isolation": "X"
+        "description": "The while loop has been chosen at random and removed by the mutation. The while loops body has been completely removed"
       },
       {
         "id": "LRRemoval7",
         "preMutation": "public class Person {\n    int age = 20;\n\n    public void main() {\n\n        int i = 1;\n        ~do {\n            ~System.out.println(\"You are not \" + i + \" year(s) old\");\n            ~i++;\n        ~}\n        ~while (i < age);\n    }\n}",
         "postMutation": "public class Person {\n    int age = 20;\n\n    public void main() {\n\n        int i = 1;\n        ~-do {\n            ~-System.out.println(\"You are not \" + i + \" year(s) old\");\n            ~-i++;\n        ~-}\n        ~-while (i < age);\n    }\n}",
-        "description": "The Do-While loop has been chosen at random and removed by the mutation, additionally the DO statements body has also been removed",
-        "isolation": "X"
+        "description": "The Do-While loop has been chosen at random and removed by the mutation, additionally the DO statements body has also been removed"
       },
       {
         "id": "LRRemoval8",
         "preMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            getAgeAsString();\n\n        } catch (Exception ex) {\n            ~throw new NullPointerException(\"Cannot cast properly\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            getAgeAsString();\n\n        } catch (Exception ex) {\n            ~-throw new NullPointerException(\"Cannot cast properly\");\n        }\n    }\n}",
-        "description": "The throw statement has been chosen at random and removed by the mutation, the outer catch is left intact as it was selected to be removed",
-        "isolation": "X"
+        "description": "The throw statement has been chosen at random and removed by the mutation, the outer catch is left intact as it was selected to be removed"
       },
       {
         "id": "LRRemoval9",
         "preMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = String.valueOf(age);\n        ~return ageString.toString();\n    }\n    \n    public void main() {\n        System.out.println(getAgeAsString());\n    }\n}",
         "postMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = String.valueOf(age);\n        ~-return ageString.toString();\n    }\n    \n    public void main() {\n        System.out.println(getAgeAsString());\n    }\n}",
-        "description": "The return statement of the 'getAgeAsString()' has been chosen at random and removed by the mutation",
-        "isolation": "X"
+        "description": "The return statement of the 'getAgeAsString()' has been chosen at random and removed by the mutation"
       },
       {
         "id": "LRRemoval10",
         "preMutation": "public class Person {\n    String[] hobbies = new String[] { \"Skiing\", \"Gaming\", \"Swimming\" };\n\n    public void main() {\n\n        for (String hobby : hobbies) {\n\n            if (hobby.equals(\"Gaming\")) {\n                System.out.println(\"You found my favourite hobby: \" + hobby);\n                ~break;\n            }\n\n            System.out.println(\"I like this hobby: \" + hobby);\n        }\n    }\n}",
         "postMutation": "public class Person {\n    String[] hobbies = new String[] { \"Skiing\", \"Gaming\", \"Swimming\" };\n\n    public void main() {\n\n        for (String hobby : hobbies) {\n\n            if (hobby.equals(\"Gaming\")) {\n                System.out.println(\"You found my favourite hobby: \" + hobby);\n                ~-break;\n            }\n\n            System.out.println(\"I like this hobby: \" + hobby);\n        }\n    }\n}",
-        "description": "The break statement in the IF statement body has been chosen at random and removed by the mutation",
-        "isolation": "X"
+        "description": "The break statement in the IF statement body has been chosen at random and removed by the mutation"
       },
       {
         "id": "LRRemoval11",
         "preMutation": "public class Person {\n    String[] hobbies = new String[] { \"Skiing\", \"Gaming\", \"Swimming\" };\n\n    public void main() {\n\n        for (String hobby : hobbies) {\n\n            if (hobby.equals(\"Gaming\")) {\n                System.out.println(\"You found my favourite hobby: \" + hobby);\n                ~continue;\n            }\n\n            System.out.println(\"I like this hobby: \" + hobby);\n        }\n    }\n}",
         "postMutation": "public class Person {\n    String[] hobbies = new String[] { \"Skiing\", \"Gaming\", \"Swimming\" };\n\n    public void main() {\n\n        for (String hobby : hobbies) {\n\n            if (hobby.equals(\"Gaming\")) {\n                System.out.println(\"You found my favourite hobby: \" + hobby);\n                ~-continue;\n            }\n\n            System.out.println(\"I like this hobby: \" + hobby);\n        }\n    }\n}",
-        "description": "The continue statement in the IF statement body has been chosen at random and removed by the mutation",
-        "isolation": "X"
+        "description": "The continue statement in the IF statement body has been chosen at random and removed by the mutation"
       },
       {
         "id": "LRRemoval12",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            ~System.out.println(\"Over 20 years old!\");\n        }\n    }\n} ",
         "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            ~-System.out.println(\"Over 20 years old!\");\n        }\n    }\n} ",
-        "description": "The 'System.out.println' method call has been chosen at random and removed by the mutation. The IF statement branch is left without a body but not removed, to prevent other possible branches from being removed",
-        "isolation": "X"
+        "description": "The 'System.out.println' method call has been chosen at random and removed by the mutation. The IF statement branch is left without a body but not removed, to prevent other possible branches from being removed"
       },
       {
         "id": "LRRemoval13",
         "preMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        ~try {\n            ~getAgeAsString();\n\n        ~} catch (Exception ex) {\n            ~throw new NullPointerException(\"Cannot cast properly\");\n\n        ~} finally {\n            ~System.out.println(\"Error caught and action taken\");\n        ~}\n    }\n}\n",
         "postMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        ~-try {\n            ~-getAgeAsString();\n\n        ~-} catch (Exception ex) {\n            ~-throw new NullPointerException(\"Cannot cast properly\");\n\n        ~-} finally {\n            ~-System.out.println(\"Error caught and action taken\");\n        ~-}\n    }\n}\n",
-        "description": "The Try statement has been chosen at random and removed by the mutation. As the try statement was selected the catch and optional finally block are also removed to preserve the correctness of the code",
-        "isolation": "X"
+        "description": "The Try statement has been chosen at random and removed by the mutation. As the try statement was selected the catch and optional finally block are also removed to preserve the correctness of the code"
       },
       {
         "id": "LRRemoval14",
         "preMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            getAgeAsString();\n\n        ~} catch (Exception ex) {\n            ~throw new NullPointerException(\"Cannot cast properly\");\n\t\t\t\n        } finally {\n            System.out.println(\"Error caught and action taken\");\n\t}\n    }\n}",
         "postMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            getAgeAsString();\n\n        ~-} catch (Exception ex) {\n            ~-throw new NullPointerException(\"Cannot cast properly\");\n\t\t\n        } finally {\n            System.out.println(\"Error caught and action taken\");\n\t}\n    }\n}\n",
-        "description": "The Try statement has been chosen at random by the mutation, then the mutation decided randomly that the catch statement attached to the try statement should be removed along with its body",
-        "isolation": "X"
+        "description": "The Try statement has been chosen at random by the mutation, then the mutation decided randomly that the catch statement attached to the try statement should be removed along with its body. In Java a catch block can only be removed if there is a finally block under it or another catch block exists, in this case the catch block is delete as the finally block exists"
       },
       {
         "id": "LRRemoval15",
         "preMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            getAgeAsString();\n\n        } catch (Exception ex) {\n            throw new NullPointerException(\"Cannot cast properly\");\n\t\t\t\n        ~} finally {\n            ~System.out.println(\"Error caught and action taken\");\n\t}\n    }\n}",
         "postMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            getAgeAsString();\n\n        } catch (Exception ex) {\n            throw new NullPointerException(\"Cannot cast properly\");\n\t\t\t\n        ~-} finally {\n            ~-System.out.println(\"Error caught and action taken\");\n\t}\n    }\n}",
-        "description": "The Try statement has been chosen at random by the mutation, then the mutation decided randomly that the finally statement attached to the try statement should be removed along with its body",
-        "isolation": "X"
+        "description": "The Try statement has been chosen at random by the mutation, then the mutation decided randomly that the finally statement attached to the try statement should be removed along with its body"
       },
       {
         "id": "LRRemoval16",
         "preMutation": "public class Person {\n    String favouriteColour = \"cyan\";\n\n    public void main() {\n\n        ~switch (favouriteColour) {\n\n            ~case \"red\":\n                ~System.out.println(\"Anger\");\n                ~break;\n\n            ~case \"cyan\":\n                ~System.out.println(\"Tranquil\");\n                ~break;\n\n            ~default:\n                ~System.out.println(\"Could not determine your mood\");\n        ~}\n    }\n}",
         "postMutation": "public class Person {\n    String favouriteColour = \"cyan\";\n\n    public void main() {\n\n        ~-switch (favouriteColour) {\n\n            ~-case \"red\":\n                ~-System.out.println(\"Anger\");\n                ~-break;\n\n            ~-case \"cyan\":\n                ~-System.out.println(\"Tranquil\");\n                ~-break;\n\n            ~-default:\n                ~-System.out.println(\"Could not determine your mood\");\n        ~-}\n    }\n}",
-        "description": "The Switch statement has been chosen at random by the mutation, the Switch statement including the case and default statements have been entirely removed to preserve the correctness of the code",
-        "isolation": "X"
+        "description": "The Switch statement has been chosen at random by the mutation, the Switch statement including the case and default statements have been entirely removed to preserve the correctness of the code"
       },
       {
         "id": "LRRemoval17",
         "preMutation": "public class Person {\n    String favouriteColour = \"cyan\";\n\n    public void main() {\n\n        switch (favouriteColour) {\n\n            ~case \"red\":\n                ~System.out.println(\"Anger\");\n                ~break;\n\n            case \"cyan\":\n                System.out.println(\"Tranquil\");\n                break;\n\n            default:\n                System.out.println(\"Could not determine your mood\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n    String favouriteColour = \"cyan\";\n\n    public void main() {\n\n        switch (favouriteColour) {\n\n            ~-case \"red\":\n                ~-System.out.println(\"Anger\");\n                ~-break;\n\n            case \"cyan\":\n                System.out.println(\"Tranquil\");\n                break;\n\n            default:\n                System.out.println(\"Could not determine your mood\");\n        }\n    }\n}",
-        "description": "The Switch case '\"red\"' has been chosen at random by the mutation and the case entry and its body are removed",
-        "isolation": "X"
+        "description": "The Switch case '\"red\"' has been chosen at random by the mutation and the case entry and its body are removed"
       },
       {
         "id": "LRRemoval18",
         "preMutation": "public class Person {\n    String favouriteColour = \"cyan\";\n\n    public void main() {\n        switch (favouriteColour) {\n\n            case \"red\":\n                System.out.println(\"Anger\");\n                break;\n\n            case \"cyan\":\n                System.out.println(\"Tranquil\");\n                break;\n\n            ~default:\n                ~System.out.println(\"Could not determine your mood\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n    String favouriteColour = \"cyan\";\n\n    public void main() {\n        switch (favouriteColour) {\n\n            case \"red\":\n                System.out.println(\"Anger\");\n                break;\n\n            case \"cyan\":\n                System.out.println(\"Tranquil\");\n                break;\n\n            ~-default:\n                ~-System.out.println(\"Could not determine your mood\");\n       }\n    }\n}",
-        "description": "The default keyword has been chosen at random by the mutation and the default statement and its body are removed ",
-        "isolation": "X"
+        "description": "The default keyword has been chosen at random by the mutation and the default statement and its body are removed "
       }
     ]
   },
 
   "LRRelocation": {
-    "mutationDescription": "...",
+    "mutationDescription": "The LRRelocation mutation is a child of the Line Relocation and Removal (LRR) mutation, with the goal of moving statements in the same method around. Variable declarations, method calls, if, while, do-while, for, try and switch statements, and throw statements can all be moved.",
+    "implementationDetails": "(1) Collect from the program all nodes that are specified in the LRR 'getAllowedNodes()' method, for this mutation this list is modified by the mutation to remove Switch entries, Field declarations and a few others<br>(2) Two unique nodes are selected from the program that comply to the allowed nodes, if two unique nodes cannot be found then the program is returned unmodified<br>(3) The second node with the name of 'nodeTo' which is the location nodeFrom will relocate to, does not have a block statement ancestor then the program is returned as the mutation requires a block statement for relocation<br>(4) NodeFrom is copied above nodeTo using the 'addBefore()' method that BlockStmt provides, and the original nodeFrom is removed<br>(5) The modified program is then returned",
     "examples": [
       {
         "id": "LRRelocation1",
         "preMutation": "public class Person {\n\n    public void main() {\n        ~String first = \"Fenton\";\n        String last = \"Reid\";\n    }\n}",
         "postMutation": "public class Person {\n\n    public void main() {\n        String last = \"Reid\";\n        ~+String first = \"Fenton\";\n    }\n}",
-        "description": "The variable assignment 'String last = \"Reid\"' has switched places with the 'first' variable",
-        "isolation": "X"
+        "description": "The variable assignment 'String last = \"Reid\"' has switched places with the 'first' variable"
       },
       {
         "id": "LRRelocation2",
         "preMutation": "public class Person {\n    \n    public String getName(String first, String last) {\n        return first + \" \" + last;\n    }\n\n    public String getName(String first, String middle, String last) {\n        return first + \" \" + middle + \" \" + last;\n    }\n\n    public void main() {\n\n        ~System.out.println(getName(\"Fenton\", \"Reid\"));\n        System.out.println(getName(\"Fenton\", \"Saoirse\", \"Reid\"));\n    }\n}",
         "postMutation": "public class Person {\n\n    public String getName(String first, String last) {\n        return first + \" \" + last;\n    }\n\n    public String getName(String first, String middle, String last) {\n        return first + \" \" + middle + \" \" + last;\n    }\n\n    public void main() {\n\n        System.out.println(getName(\"Fenton\", \"Saoirse\", \"Reid\"));\n        ~+System.out.println(getName(\"Fenton\", \"Reid\"));\n    }\n}",
-        "description": "The 'getName(\"Fenton\", \"Reid\")' print line statement has been chosen randomly by the mutation and relocated to below the other print line statement",
-        "isolation": "X"
+        "description": "The 'getName(\"Fenton\", \"Reid\")' print line statement has been chosen randomly by the mutation and relocated to below the other print line statement"
       },
       {
         "id": "LRRelocation3",
         "preMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            getAgeAsString();\n\n        } catch (Exception ex) {\n            ~throw new NullPointerException(\"Cannot cast properly\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n    int age = 20;\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n\n        try {\n            ~+throw new NullPointerException(\"Cannot cast properly\");\n            getAgeAsString();\n\n        } catch (Exception ex) {\n        }\n    }\n}",
-        "description": "The throw statement present in the body of the catch statement has been relocated to above the 'getAgeAsString()' method call. The body of the catch statement is now empty but remains to preserve correctness of the try statement that requires a catch block",
-        "isolation": "X"
+        "description": "The throw statement present in the body of the catch statement has been relocated to above the 'getAgeAsString()' method call. The body of the catch statement is now empty but remains to preserve correctness of the try statement that requires a catch block"
       },
       {
         "id": "LRRelocation4",
         "preMutation": "public class Person {\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n        int age = 20;\n\n        ~try {\n            ~getAgeAsString();\n\n        ~} catch (Exception ex) {\n            ~throw new NullPointerException(\"Cannot cast properly\");\n\n        ~} finally {\n            ~System.out.println(\"Error caught and action taken\");\n        ~}\n    }\n}\n",
         "postMutation": "public class Person {\n\n    public String getAgeAsString() {\n        String ageString = null;\n        return ageString.toString();\n    }\n\n    public void main() {\n        \n        ~+try {\n            ~+getAgeAsString();\n\n        ~+} catch (Exception ex) {\n            ~+throw new NullPointerException(\"Cannot cast properly\");\n\n        ~+} finally {\n            ~+System.out.println(\"Error caught and action taken\");\n        ~+}\n        \n        int age = 20;\n    }\n}\n",
-        "description": "The Try statement has been chosen by the mutation and relocated to above the 'age' variable declaration. The mutation does not move the children of the Try statement (catch or finally blocks) as these statements cannot exist outside the Try statement",
-        "isolation": "X"
+        "description": "The Try statement has been chosen by the mutation and relocated to above the 'age' variable declaration. The mutation does not move the children of the Try statement (catch or finally blocks) as these statements cannot exist outside the Try statement"
       },
       {
         "id": "LRRelocation5",
         "preMutation": "public class Person {\n    String favouriteColour = \"cyan\";\n\n    public void main() {\n        int age = 20;\n\n        ~switch (favouriteColour) {\n\n            ~case \"red\":\n                ~System.out.println(\"Anger\");\n                ~break;\n\n            ~case \"cyan\":\n                ~System.out.println(\"Tranquil\");\n                ~break;\n\n            ~default:\n                ~System.out.println(\"Could not determine your mood\");\n        ~}\n    }\n}",
         "postMutation": "public class Person {\n    String favouriteColour = \"cyan\";\n\n    public void main() {\n\n        ~+switch(favouriteColour) {\n            \n            ~+case \"red\":\n                ~+System.out.println(\"Anger\");\n                ~+break;\n            \n            ~+case \"cyan\":\n                ~+System.out.println(\"Tranquil\");\n                ~+break;\n\n            ~+default:\n                ~+System.out.println(\"Could not determine your mood\");\n            ~+}\n\n        int age = 20;\n    }\n}",
-        "description": "The Switch Statement has been chosen by the mutation at random and relocated to above the 'age' variable declaration. The mutation does not move the children of the Switch statement (case or default blocks) as these statements cannot exist outside the Switch statement",
-        "isolation": "X"
+        "description": "The Switch Statement has been chosen by the mutation at random and relocated to above the 'age' variable declaration. The mutation does not move the children of the Switch statement (case or default blocks) as these statements cannot exist outside the Switch statement"
       },
       {
         "id": "LRRelocation6",
         "preMutation": "public class Person {\n    String[] hobbies = new String[] { \"Skiing\", \"Gaming\", \"Swimming\" };\n\n    public void main() {\n        int age = 20;\n        \n        ~for (String hobby : hobbies) {\n            ~System.out.println(\"I like this hobby: \" + hobby);\n        ~}\n    }\n}",
         "postMutation": "public class Person {\n    String[] hobbies = new String[] { \"Skiing\", \"Gaming\", \"Swimming\" };\n\n    public void main() {\n\n        ~+for (String hobby : hobbies) {\n            ~+System.out.println(\"I like this hobby: \" + hobby);\n        ~+}\n        \n        int age = 20;\n    }\n}",
-        "description": "The For statement has been chosen by the mutation at random and relocated to above the 'age' variable declaration",
-        "isolation": "X"
+        "description": "The For statement has been chosen by the mutation at random and relocated to above the 'age' variable declaration"
       },
       {
         "id": "LRRelocation7",
         "preMutation": "public class Person {\n    int age = 20;\n\n    public void main() {\n\n        int i = 0;\n        ~while (i < age) {\n            ~System.out.println(\"You are not: \" + i);\n            ~i++;\n        ~}\n    }\n}",
         "postMutation": "public class Person {\n    int age = 20;\n\n    public void main() {\n\n        ~+while (i < age) {\n            ~+System.out.println(\"You are not: \" + i);\n            ~+i++;\n        ~+}\n        \n        int i = 0;\n    }\n}",
-        "description": "The While statement has been chosen by the mutation at random and relocated to above the 'i' variable declaration. This example shows that mutations can be detrimental, in this instance the variable 'i' is referenced in the While statement before its declaration causing an exception to be thrown if this code is run",
-        "isolation": "X"
+        "description": "The While statement has been chosen by the mutation at random and relocated to above the 'i' variable declaration. This example shows that mutations can be detrimental, in this instance the variable 'i' is referenced in the While statement before its declaration causing an exception to be thrown if this code is run"
       },
       {
         "id": "LRRelocation8",
         "preMutation": "public class Person {\n    int age = 20;\n\n    public void main() {\n\n        int i = 1;\n        ~do {\n            ~System.out.println(\"You are not \" + i + \" year(s) old\");\n            ~i++;\n        ~}\n        ~while (i < age);\n    }\n}",
         "postMutation": "public class Person {\n    int age = 20;\n\n    public void main() {\n\n        ~+do {\n            ~+System.out.println(\"You are not \" + i + \" year(s) old\");\n            ~+i++;\n        ~+} while (i < age);\n        \n        int i = 1;\n    }\n}",
-        "description": "The Do-While statement has been chosen by the mutation at random and relocated to above 'i' variable declaration. The variable 'i' is referenced before its declaration so once again will cause an exception to be thrown",
-        "isolation": "X"
+        "description": "The Do-While statement has been chosen by the mutation at random and relocated to above 'i' variable declaration. The variable 'i' is referenced before its declaration so once again will cause an exception to be thrown"
       },
       {
         "id": "LRRelocation9",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        System.out.println(\"What age are you?\");\n\n        ~if (age == 20) {\n            ~System.out.println(\"Over 20 years old!\");\n\n        ~} else if (age > 30) {\n            ~System.out.println(\"Over 30 years old!\");\n\n        ~} else {\n            ~System.out.println(\"Not sure, what age you are!\");\n        ~}\n    }\n}",
         "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~+if (age == 20) {\n            ~+System.out.println(\"Over 20 years old!\");\n        \n        ~+} else if (age > 30) {\n            ~+System.out.println(\"Over 30 years old!\");\n        \n        ~+} else {\n            ~+System.out.println(\"Not sure, what age you are!\");\n        ~+}\n        \n        System.out.println(\"What age are you?\");\n    }\n}",
-        "description": "The 'IF' branch of the IF statement has been chosen by the mutation at random and relocated to above the 'print line' statement",
-        "isolation": "X"
+        "description": "The 'IF' branch of the IF statement has been chosen by the mutation at random and relocated to above the 'print line' statement"
       },
       {
         "id": "LRRelocation10",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        System.out.println(\"What age are you?\");\n        \n        ~if (age == 20) {\n            ~System.out.println(\"Over 20 years old!\");\n\n        ~} else if (age > 30) {\n            ~System.out.println(\"Over 30 years old!\");\n\n        } else {\n            System.out.println(\"Not sure, what age you are!\");\n        }\n    }\n}",
         "postMutation": "public class Person {\n\n    int age = 22;\n\n    public void main() {\n        System.out.println(\"What age are you?\");\n\n        ~+if (age > 30) {\n            ~+System.out.println(\"Over 30 years old!\");\n\n        } else {\n            System.out.println(\"Not sure, what age you are!\");\n        }\n\n        ~+if (age == 20) {\n            ~+System.out.println(\"Over 20 years old!\");\n        }\n    }\n}",
-        "description": "The 'else-if' branch of the IF statement has been chosen by the mutation at random and relocated to below the original IF statement",
-        "isolation": "X"
+        "description": "The 'else-if' branch of the IF statement has been chosen by the mutation at random and relocated to below the original IF statement"
       },
       {
         "id": "LRRelocation11",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        System.out.println(\"What age are you?\");\n        \n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n\n        } else if (age > 30) {\n            System.out.println(\"Over 30 years old!\");\n\n        ~} else {\n            ~System.out.println(\"Not sure, what age you are!\");\n        ~}\n    }\n}",
         "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n        System.out.println(\"What age are you?\");\n        \n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n\n        } else if (age > 30) {\n            System.out.println(\"Over 30 years old!\");\n\n        } else {\n            System.out.println(\"Not sure, what age you are!\");\n        }\n    }\n}",
-        "description": "The 'else' branch of the IF statement is left unchanged since a new if statement cannot be made without an expression",
-        "isolation": "X"
+        "description": "The 'else' branch of the IF statement is left unchanged since a new if statement cannot be made without an expression"
       },
       {
         "id": "LRRelocation12",
         "preMutation": "public class Person {\n\n    public String getName(String first, String last) {\n        ~System.out.println(\"Get name without middle name\");\n        return first + \" \" + last;\n    }\n\n    public String getName(String first, String middle, String last) {\n        ~System.out.println(\"Get name with middle name\");\n        return first + \" \" + middle + \" \" + last;\n    }\n}",
         "postMutation": "public class Person {\n\n    public String getName(String first, String last) {\n        ~System.out.println(\"Get name without middle name\");\n        return first + \" \" + last;\n    }\n\n    public String getName(String first, String middle, String last) {\n        ~System.out.println(\"Get name with middle name\");\n        return first + \" \" + middle + \" \" + last;\n    }\n}",
-        "description": "The original program is returned unchanged by the mutation as nodes can only be relocated if they belong to the same method (allowed nodes highlighted in blue). This is to reduce the number of usages of variables and methods that are not defined in scope",
-        "isolation": "X"
+        "description": "The original program is returned unchanged by the mutation as nodes can only be relocated if they belong to the same method (allowed nodes highlighted in blue). This is to reduce the number of usages of variables and methods that are not defined in scope"
       },
       {
         "id": "LRRelocation13",
         "preMutation": "public class Person {\n\n    public String getName(String first, String last) {\n        ~System.out.println(\"Get name without middle name\");\n        return first + \" \" + last;\n    }\n}",
         "postMutation": "public class Person {\n\n    public String getName(String first, String last) {\n        ~System.out.println(\"Get name without middle name\");\n        return first + \" \" + last;\n    }\n}",
-        "description": "The original program is returned unchanged by the mutation as two unique nodes in the same method are required for the mutation to work (allowed nodes highlighted in blue), where node one is added above node two. In this case only one allowed node in the 'getName()' method could be found",
-        "isolation": "X"
+        "description": "The original program is returned unchanged by the mutation as two unique nodes in the same method are required for the mutation to work (allowed nodes highlighted in blue), where node one is added above node two. In this case only one allowed node in the 'getName()' method could be found"
       }
     ]
   }

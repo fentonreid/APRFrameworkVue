@@ -211,7 +211,6 @@ export default {
     },
     getClassifications() {
       // Get the classifications defined in the firebase classifications object
-      console.log("TRYING TO GET!!!");
       axios
         .get(
           "https://aprframeworkvue-default-rtdb.europe-west1.firebasedatabase.app/classifications.json"

@@ -1,15 +1,27 @@
 <template>
   <div id="description_div">
-    <h2 id="description_heading">Description</h2>
+    <h2 id="description_heading">Mutation Description</h2>
     <div
       v-if="
         mutationDetails[mutationId] != null &&
         mutationDetails[mutationId].mutationDescription != null
       "
     >
-      <p>{{ mutationDetails[mutationId].mutationDescription }}</p>
+      <p v-html="mutationDetails[mutationId].mutationDescription"></p>
     </div>
     <p v-else>Could not load description for this mutation.</p>
+  </div>
+  <div id="implementation_div">
+    <h2 id="implementation_heading">Implementation Details</h2>
+    <div
+      v-if="
+        mutationDetails[mutationId] != null &&
+        mutationDetails[mutationId].implementationDetails != null
+      "
+    >
+      <p v-html="mutationDetails[mutationId].implementationDetails"></p>
+    </div>
+    <p v-else>Could not load implementations details for this mutation.</p>
   </div>
   <br />
   <div id="example_div">
@@ -72,7 +84,8 @@ export default {
 
 <style scoped>
 #description_heading,
-#example_heading {
+#example_heading,
+#implementation_heading {
   font-family: Roboto;
 }
 

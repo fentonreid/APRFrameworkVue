@@ -1,6 +1,6 @@
 <template>
-  <h1>BER Removal Mutation</h1>
-  <MutationPage mutationId="BERRemoval" />
+  <h1>Switch Parameter Mutation (SPM) Mutation</h1>
+  <MutationPage mutationId="SPM" />
 </template>
 
 <script>

@@ -1,6 +1,6 @@
 <template>
-  <h1>LRR Mutation</h1>
-  <MutationPage mutationId="LRR"/>
+  <h1>Line Relocation and Removal (LRR) Mutation</h1>
+  <MutationPage mutationId="LRR" />
 </template>
 
 <script>

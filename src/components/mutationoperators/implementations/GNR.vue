@@ -1,6 +1,6 @@
 <template>
-  <h1>WRM Mutation</h1>
-  <MutationPage mutationId="WRM"/>
+  <h1>Generate Node Replacement (GNR) Mutation</h1>
+  <MutationPage mutationId="GNR" />
 </template>
 
 <script>

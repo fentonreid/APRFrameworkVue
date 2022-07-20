@@ -1,6 +1,6 @@
 <template>
-  <h1>BER Mutation</h1>
-  <MutationPage mutationId="BER"/>
+  <h1>Boolean Expansion and Reduction (BER) Mutation</h1>
+  <MutationPage mutationId="BER" />
 </template>
 
 <script>

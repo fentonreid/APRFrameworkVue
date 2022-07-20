@@ -1,6 +1,6 @@
 <template>
-  <h1>SVM Mutation</h1>
-  <MutationPage mutationId="SVM"/>
+  <h1>BER Reduction Mutation</h1>
+  <MutationPage mutationId="BERReduction" />
 </template>
 
 <script>

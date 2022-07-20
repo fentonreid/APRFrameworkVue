@@ -30,7 +30,7 @@
       </div>
       <div>
         <h4>Test id:</h4>
-        {{ examples[currentIndex].isolation }}
+        {{ examples[currentIndex].id }}
       </div>
     </div>
   </div>

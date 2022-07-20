@@ -1,6 +1,6 @@
 <template>
-  <h1>BEM Mutation</h1>
-  <MutationPage mutationId="BEM"/>
+  <h1>Boolean Expression Manipulation (BEM) Mutation</h1>
+  <MutationPage mutationId="BEM" />
 </template>
 
 <script>

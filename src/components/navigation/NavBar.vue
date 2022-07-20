@@ -14,6 +14,9 @@
         <li>
           <router-link to="/generatedpatches">Generated Patches</router-link>
         </li>
+        <li>
+          <router-link to="/javadoc">Javadoc</router-link>
+        </li>
       </ul>
     </div>
   </section>

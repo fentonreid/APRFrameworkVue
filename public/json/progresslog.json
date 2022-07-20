@@ -287,6 +287,14 @@
         {
           "hour": 2,
           "description": "Planning SVM examples,<br>Adding support to object creation expression when no constructors are available,<br>SVM examples added to website"
+        },
+        {
+          "hour": 5,
+          "description": "Had meeting with supervisor outlined mutation operator progress,<br>Finalised names of mutations and added descriptions and implementation details to each operator on the website,<br>Add custom expection for when the mutation needs to returns back the program unmodified,<br>GP mutation now handles the custom exception differently,<br>Javadoc navbar item and temporary javadoc pages added to website"
+        },
+        {
+          "hour": 2,
+          "description": "Fixed issue where patches with more than one modified class had been viewed as valid,<br>"
         }
       ]
     }

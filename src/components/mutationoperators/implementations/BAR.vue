@@ -1,6 +1,6 @@
 <template>
-  <h1>BAR Mutation</h1>
-  <MutationPage mutationId="BAR"/>
+  <h1>Boolean and Relational (BAR) Mutation</h1>
+  <MutationPage mutationId="BAR" />
 </template>
 
 <script>
