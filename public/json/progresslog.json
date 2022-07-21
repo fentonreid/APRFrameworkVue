@@ -293,8 +293,8 @@
           "description": "Had meeting with supervisor outlined mutation operator progress,<br>Finalised names of mutations and added descriptions and implementation details to each operator on the website,<br>Add custom expection for when the mutation needs to returns back the program unmodified,<br>GP mutation now handles the custom exception differently,<br>Javadoc navbar item and temporary javadoc pages added to website"
         },
         {
-          "hour": 2,
-          "description": "Fixed issue where patches with more than one modified class had been viewed as valid,<br>"
+          "hour": 6,
+          "description": "Fixed issue where patches with more than one modified class had been viewed as valid,<br>SVM can now modify return statements, LRemoval can now delete method declarations, binary string comparisons added to BER Expansion and BEM mutation"
         }
       ]
     }

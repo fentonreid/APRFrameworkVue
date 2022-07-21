@@ -1,5 +1,5 @@
 <template>
-  <h1>Line Relocation and Removal (LRR) Mutation</h1>
+  <h1>Line Removal and Relocation (LRR) Mutation</h1>
   <MutationPage mutationId="LRR" />
 </template>
 
