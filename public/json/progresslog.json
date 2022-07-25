@@ -274,7 +274,7 @@
 
     {
       "id": "Week 10",
-      "totalHours": 0,
+      "totalHours": 35,
       "entries": [
         {
           "hour": 3,
@@ -295,6 +295,28 @@
         {
           "hour": 6,
           "description": "Fixed issue where patches with more than one modified class had been viewed as valid,<br>SVM can now modify return statements, LRemoval can now delete method declarations, binary string comparisons added to BER Expansion and BEM mutation"
+        },
+        {
+          "hour": 5,
+          "description": "GP will now only return one successful patch, use iterationPerBug to get more patches per bug,<br>Reworked fitness function, so now number of failing cases is the condition, with the GP being a minimisation problem (a patch is solved when no failing cases are recorded),<br>Error check for custom mutation error so that this is handled via returning the original mutation, for instances where running the test cases fails a high fitness value of 10,000 is set,<br>"
+        },
+        {
+          "hour": 3,
+          "description": "Plan out Generate Patches mutation and setup example page"
+        },
+        {
+          "hour": 7,
+          "description": "Testing out BERRemoval, LRRelocation and LRRemoval mutations,<br>Writing javadocs for all java files, <br> BERExpansion has a 10 chance to add a null value to the generated binary expression"
+        }
+      ]
+    },
+    {
+      "id": "Week 11",
+      "totalHours": "X",
+      "entries": [
+        {
+          "hour": "...",
+          "description": "Working on adding mutation tests,<br>Planning experiment"
         }
       ]
     }

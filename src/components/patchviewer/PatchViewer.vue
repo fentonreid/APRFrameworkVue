@@ -191,10 +191,10 @@ export default {
       let currentPatch = "";
       for (let line of result) {
         if (line.startsWith("+ ")) {
+          line = "<mark style='background-color: coral'>" + line + "</mark>";
+        } else if (line.startsWith("- ")) {
           line =
             "<mark style='background-color: lightgreen'>" + line + "</mark>";
-        } else if (line.startsWith("- ")) {
-          line = "<mark style='background-color: coral'>" + line + "</mark>";
         } else if (line.startsWith("---") || line.startsWith("+++")) {
           line =
             "<mark style='background-color: lightblue'>" + line + "</mark>";
@@ -272,7 +272,6 @@ export default {
           }
         }
       }
-      console.log(this.selectedIdentifiers);
     },
     selectAllClassifications() {
       if (this.classifications.length == this.selectedClassifications.length) {
@@ -287,7 +286,6 @@ export default {
     },
     updateClassification() {
       // When this is changed,
-      ////                    Will need to patch the firebase patch
       console.log(this.radioClassification);
 
       // Update the changes in the patches object locally, instead of re-requesting firebase patches
