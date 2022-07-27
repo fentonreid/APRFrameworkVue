@@ -274,7 +274,7 @@
 
     {
       "id": "Week 10",
-      "totalHours": 35,
+      "totalHours": 34,
       "entries": [
         {
           "hour": 3,
@@ -315,8 +315,12 @@
       "totalHours": "X",
       "entries": [
         {
-          "hour": "...",
-          "description": "Working on adding mutation tests,<br>Planning experiment"
+          "hour": 9,
+          "description": "Trying to add original arguments of a method call to another,<br>Writing tests for mutation helpers and started to test CSVOutput class,<br>Finished writing tests for CSVOutput and started planning the pre and post mutations tests for website mutation examples,<br>Added all mutation examples as tests and started to ensure all pass,<br>"
+        },
+        {
+          "hour": 2,
+          "description": "Adding home page to vue website,<br>Includes details for the main usages of the website, test cases implemented, creating a new mutation operator, and understanding the YAML configuration file"
         }
       ]
     }

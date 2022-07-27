@@ -257,9 +257,9 @@
       },
       {
         "id": "BERReduction4",
-        "preMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n\n        String message = ~favouriteNumber > 0 ? \"Are you a dice?\" : \"Hmm, not a dice!\";\n        System.out.println(message);\n    }\n}",
-        "postMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n\n        String message = ~+\"Are you a dice?\";\n        System.out.println(message);\n    }\n}",
-        "description": "The ternary operator 'favouriteNumber > 0 && favouriteNumber <= 6' is not a compound expression, in these instances the BER Reduction mutation will keep the true assignment of the ternary operator"
+        "preMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n\n        String message = favouriteNumber > 0 ? \"Are you a dice?\" : \"Hmm, not a dice!\";\n        System.out.println(message);\n    }\n}",
+        "postMutation": "public class Person {\n    int favouriteNumber = 4;\n\n    public String favouriteNumber() {\n\n        String message = favouriteNumber > 0 ? \"Are you a dice?\" : \"Hmm, not a dice!\";\n        System.out.println(message);\n    }\n}",
+        "description": "Since the ternary operator is a single expression 'favouriteNumber > 0' the program is returned unmodified as no compound expressions are present in the program"
       },
       {
         "id": "BERReduction5",
@@ -351,8 +351,8 @@
       {
         "id": "LRRemoval3",
         "preMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n\n        ~} else if (age > 30) {\n            ~System.out.println(\"Over 30 years old!\");\n\n        } else {\n            System.out.println(\"Not sure, what age you are!\");\n        }\n    }\n}",
-        "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        if (age == 20) {\n            System.out.println(\"Over 20 years old!\");\n\n        ~-} else if (age > 30) {\n            ~-System.out.println(\"Over 30 years old!\");\n\n        } else {\n            System.out.println(\"Not sure, what age you are!\");\n        }\n    }\n}",
-        "description": "The else-if branch of the IF statement has been chosen at random and removed by the mutation. The else-if statement is completely removed"
+        "postMutation": "public class Person {\n    int age = 22;\n\n    public void main() {\n\n        ~if (age == 20) {\n            ~System.out.println(\"Over 20 years old!\");\n\n        ~} else if (age > 30) {\n            ~System.out.println(\"Over 30 years old!\");\n\n        ~} else {\n            ~System.out.println(\"Not sure, what age you are!\");\n        ~}\n    }\n}",
+        "description": "The else-if branch of the IF statement has been chosen at random and removed by the mutation along with child branches such as the else statement"
       },
       {
         "id": "LRRemoval4",
