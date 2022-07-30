@@ -319,8 +319,20 @@
           "description": "Trying to add original arguments of a method call to another,<br>Writing tests for mutation helpers and started to test CSVOutput class,<br>Finished writing tests for CSVOutput and started planning the pre and post mutations tests for website mutation examples,<br>Added all mutation examples as tests and started to ensure all pass,<br>"
         },
         {
-          "hour": 2,
-          "description": "Adding home page to vue website,<br>Includes details for the main usages of the website, test cases implemented, creating a new mutation operator, and understanding the YAML configuration file"
+          "hour": 7,
+          "description": "Adding home page to vue website,<br>Includes details for the main usages of the website, test cases implemented, creating a new mutation operator, and understanding the YAML configuration file,<br>Implemented and fixed all tests for the program"
+        },
+        {
+          "hour": 4,
+          "description": "Trying to resolve symbol solving for the program issue with parameter resolved however, example of static enum in interface is in progress,<br>"
+        },
+        {
+          "hour": 4,
+          "description": "Resolved symbol solving for the BER mutation,<br>Added full fixed program to generated patches for comparison and can now classify overfitness of generated patches on the website with updates to the database"
+        },
+        {
+          "hour": 4,
+          "description": "Worked on trying to get symbol resolving for all relevant classes of the Defects4j bug,<br>Resolve reflection types"
         }
       ]
     }

@@ -2,7 +2,7 @@ import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 import App from "./App.vue";
-import Home from "./components/home/Home.vue";
+import HomePage from "./components/home/HomePage.vue";
 import PatchViewer from "./components/patchviewer/PatchViewer.vue";
 import GeneratedPatches from "./components/generatedpatches/GeneratedPatches.vue";
 import ProgressLog from "./components/progresslog/ProgressLog.vue";
@@ -21,7 +21,7 @@ import BERReduction from "./components/mutationoperators/implementations/BERRedu
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: "/", name: "Home", component: Home },
+    { path: "/", component: HomePage },
     { path: "/patchviewer", component: PatchViewer },
     { path: "/generatedpatches", component: GeneratedPatches },
     { path: "/progresslog", component: ProgressLog },

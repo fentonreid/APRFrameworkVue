@@ -16,7 +16,11 @@
       <div id="comparison_window">
         <div id="gppatch_container">
           <h3 id="gppatch_heading">Fixed Patch</h3>
-          <div id="gppatch" class="scrollbox" v-html="colourPatchFile()" />
+          <div
+            id="gppatch"
+            class="scrollbox"
+            v-html="this.patches[currentIndex].gpPatch"
+          />
         </div>
         <div id="actualpatch_container">
           <h3 id="actualpatch_heading">Post-mutation</h3>
@@ -36,28 +40,27 @@
   <div id="classification_layout">
     <h3>Overfit patch?</h3>
     <span>Unassigned</span>
-    <input
-      type="radio"
-      value="Unassigned"
-      v-model="radioOverfitness"
-      @change="updateClassification"
-    />
 
-    <span>Yes</span>
-    <input
-      type="radio"
-      value="Yes"
-      v-model="radioOverfitness"
-      @change="updateClassification"
-    />
-
-    <span>No</span>
-    <input
-      type="radio"
-      value="No"
-      v-model="radioOverfitness"
-      @change="updateClassification"
-    />
+    <span>
+      <input
+        type="radio"
+        value="Unassigned"
+        v-model="radioOverfitness"
+        @change="updateOverfitness"
+      />Unassigned
+      <input
+        type="radio"
+        value="Yes"
+        v-model="radioOverfitness"
+        @change="updateOverfitness"
+      />Yes
+      <input
+        type="radio"
+        value="No"
+        v-model="radioOverfitness"
+        @change="updateOverfitness"
+      />No
+    </span>
   </div>
 </template>
 
@@ -94,6 +97,7 @@ export default {
           const patches = [];
           for (const firebaseId in response.data) {
             patches.push({
+              id: response.data[firebaseId].id,
               firebaseId: firebaseId,
               identifier: response.data[firebaseId].identifier,
               bid: response.data[firebaseId].bid,
@@ -116,22 +120,32 @@ export default {
           console.log("Error trying to get all patches: " + err);
         });
     },
-    colourPatchFile() {
-      let result = this.patches[this.currentIndex].gpPatch.split(/\r?\n/);
-      let currentPatch = "";
-      for (let line of result) {
-        if (line.startsWith("+ ")) {
-          line =
-            "<mark style='background-color: lightgreen'>" + line + "</mark>";
-        } else if (line.startsWith("- ")) {
-          line = "<mark style='background-color: coral'>" + line + "</mark>";
-        } else if (line.startsWith("---") || line.startsWith("+++")) {
-          line =
-            "<mark style='background-color: lightblue'>" + line + "</mark>";
-        }
-        currentPatch += line + "\n";
-      }
-      return currentPatch;
+    updateOverfitness() {
+      // When this is changed,
+      console.log(this.radioOverfitness);
+
+      // Update the changes in the patches object locally, instead of re-requesting firebase patches
+      const foundIndex = this.patches.findIndex(
+        (patch) => patch.id === this.patches[this.currentIndex].id
+      );
+
+      this.patches[foundIndex].overfitness = this.radioOverfitness;
+
+      // Update the classifier on firebase
+      axios
+        .patch(
+          "https://aprframeworkvue-default-rtdb.europe-west1.firebasedatabase.app/generatedpatches/" +
+            this.patches[foundIndex].firebaseId +
+            ".json",
+          { overfitness: this.patches[foundIndex].overfitness }
+        )
+        .catch((err) => {
+          console.log(
+            "Error trying to change overfitness of patch: " +
+              err +
+              JSON.stringify(this.patches[foundIndex])
+          );
+        });
     },
   },
   mounted() {
