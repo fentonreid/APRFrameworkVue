@@ -312,7 +312,7 @@
     },
     {
       "id": "Week 11",
-      "totalHours": "X",
+      "totalHours": "29",
       "entries": [
         {
           "hour": 9,
@@ -331,8 +331,18 @@
           "description": "Resolved symbol solving for the BER mutation,<br>Added full fixed program to generated patches for comparison and can now classify overfitness of generated patches on the website with updates to the database"
         },
         {
-          "hour": 4,
+          "hour": 5,
           "description": "Worked on trying to get symbol resolving for all relevant classes of the Defects4j bug,<br>Resolve reflection types"
+        }
+      ]
+    },
+    {
+      "id": "Week 12",
+      "totalHours": "X",
+      "entries": [
+        {
+          "hour": "16",
+          "description": "Meeting with supervisor and trying to get issue to process builder to stop hanging,<br>Create outline for dissertation structure"
         }
       ]
     }
