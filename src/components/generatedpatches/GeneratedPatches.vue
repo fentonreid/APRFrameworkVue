@@ -89,6 +89,8 @@ export default {
   },
   methods: {
     getAllGeneratedPatches() {
+      const mutationOperatorSet = new Set();
+
       axios
         .get(
           "https://aprframeworkvue-default-rtdb.europe-west1.firebasedatabase.app/generatedpatches.json"
@@ -110,8 +112,29 @@ export default {
               overfitness: response.data[firebaseId].overfitness,
               mutationOperator: response.data[firebaseId].mutationOperator,
               patchId: response.data[firebaseId].patchId,
+              identifierWithBid:
+                response.data[firebaseId].identifier +
+                " " +
+                response.data[firebaseId].bid,
             });
+
+            mutationOperatorSet.add(response.data[firebaseId].mutationOperator);
           }
+
+          // Sort bug id's ascending numerically by bug id
+          patches.sort(function (a, b) {
+            return a.bid - b.bid;
+          });
+
+          // Sort patches alphabetically by identifier
+          patches.sort(function (a, b) {
+            return a.identifier.localeCompare(b.identifier);
+          });
+
+          // Sort patches by mutation operator
+          patches.sort(function (a, b) {
+            return a.mutationOperator.localeCompare(b.mutationOperator);
+          });
 
           this.patches = patches;
           this.radioOverfitness = patches[this.currentIndex].overfitness;
