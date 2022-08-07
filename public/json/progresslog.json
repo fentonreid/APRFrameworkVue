@@ -341,8 +341,12 @@
       "totalHours": "X",
       "entries": [
         {
-          "hour": "16",
-          "description": "Meeting with supervisor and trying to get issue to process builder to stop hanging,<br>Create outline for dissertation structure"
+          "hour": "22",
+          "description": "Meeting with supervisor and trying to get issue to process builder to stop hanging,<br>Create outline for dissertation structure,<br>Report writing"
+        },
+        {
+          "hour": "12",
+          "description": "Resolved process builder hanging issue, due to defects4j.build.xml file not forking the ant junit,<br>Report writing,<br>PR to Defects4J made and website uploaded to aprframework.fentonreid.com"
         }
       ]
     }
