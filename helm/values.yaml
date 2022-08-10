@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository:
+  repository: fentonreid.azurecr.io/aprframework
   tag: #{Build.SourceVersion}#
   pullPolicy: IfNotPresent
 
