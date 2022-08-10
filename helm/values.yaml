@@ -6,7 +6,7 @@ image:
   pullPolicy: IfNotPresent
 
 ingress:
-  host: ""
+  host: "aprframework.fentonreid.com"
   tls:
     secretName: ""
 
