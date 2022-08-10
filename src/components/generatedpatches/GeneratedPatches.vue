@@ -90,16 +90,16 @@ export default {
   methods: {
     getAllGeneratedPatches() {
       const mutationOperatorSet = new Set();
+      var patches = [];
 
       axios
         .get(
           "https://aprframeworkvue-default-rtdb.europe-west1.firebasedatabase.app/generatedpatches.json"
         )
         .then((response) => {
-          const patches = [];
           for (const firebaseId in response.data) {
             patches.push({
-              id: response.data[firebaseId].id,
+              id: response.data[firebaseId].id + "_" + response.data[firebaseId].bid,
               firebaseId: firebaseId,
               identifier: response.data[firebaseId].identifier,
               bid: response.data[firebaseId].bid,
@@ -120,25 +120,48 @@ export default {
 
             mutationOperatorSet.add(response.data[firebaseId].mutationOperator);
           }
+          })
+          .then(() => {
+            let uniqueProjectIds = new Set();
+            patches.forEach(patch => {
+              uniqueProjectIds.add(patch.identifierWithBid);
+            });
 
-          // Sort bug id's ascending numerically by bug id
-          patches.sort(function (a, b) {
-            return a.bid - b.bid;
-          });
+            // For each project add and sort to tempPatches
+            var tempPatches = [];
+            uniqueProjectIds.forEach(projectId => {
+              // Get all projects then sort
+              var currentProjectIds = patches.filter(function(patch) {
+                    return patch.identifierWithBid === projectId;
+                });
 
-          // Sort patches alphabetically by identifier
-          patches.sort(function (a, b) {
-            return a.identifier.localeCompare(b.identifier);
-          });
+              currentProjectIds.sort(function (a, b) {
+                return a.patchId - b.patchId;
+              });  
+              
+              currentProjectIds.forEach(x => tempPatches.push(x));
+            });
 
-          // Sort patches by mutation operator
-          patches.sort(function (a, b) {
-            return a.mutationOperator.localeCompare(b.mutationOperator);
-          });
+            patches = tempPatches;
 
-          this.patches = patches;
-          this.radioOverfitness = patches[this.currentIndex].overfitness;
-        })
+            // Sort bug id's ascending numerically by bug id
+            patches.sort(function (a, b) {
+              return a.bid - b.bid;
+            });
+
+            // Sort patches alphabetically by identifier
+            patches.sort(function (a, b) {
+              return a.identifier.localeCompare(b.identifier);
+            });
+
+            // Sort patches by mutation operator
+            patches.sort(function (a, b) {
+              return a.mutationOperator.localeCompare(b.mutationOperator);
+            });
+
+            this.patches = patches;
+            this.radioOverfitness = patches[this.currentIndex].overfitness;
+          })
         .catch((err) => {
           console.log("Error trying to get all patches: " + err);
         });

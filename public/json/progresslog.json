@@ -338,7 +338,7 @@
     },
     {
       "id": "Week 12",
-      "totalHours": "X",
+      "totalHours": "40",
       "entries": [
         {
           "hour": "22",
@@ -347,6 +347,24 @@
         {
           "hour": "12",
           "description": "Resolved process builder hanging issue, due to defects4j.build.xml file not forking the ant junit,<br>Report writing,<br>PR to Defects4J made and website uploaded to aprframework.fentonreid.com"
+        },  
+        {
+          "hour": "6",
+          "description": "Report writing"
+        }
+      ]
+    },
+    {
+      "id": "Week 13",
+      "totalHours": "X",
+      "entries": [
+        {
+          "hour": "8",
+          "description": "Meeting with supervisor and trying to get issue to process builder to stop hanging,<br>Create outline for dissertation structure,<br>Report writing"
+        },
+        {
+          "hour": "12",
+          "description": "Report writing, vue website now sorts by id also, experiments nearly finished with all local and website patches crosschecked"
         }
       ]
     }
