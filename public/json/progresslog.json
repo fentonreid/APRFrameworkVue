@@ -365,6 +365,14 @@
         {
           "hour": "12",
           "description": "Report writing, vue website now sorts by id also, experiments nearly finished with all local and website patches crosschecked"
+        },
+        {
+          "hour": "2",
+          "description": "Getting Vue website up on aprframework.com"
+        },
+        {
+          "hour": "12",
+          "description": "Writing report, determing overfitness and creating tables for experiment 1"
         }
       ]
     }
