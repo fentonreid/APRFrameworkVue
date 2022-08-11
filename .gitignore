@@ -2,9 +2,6 @@
 node_modules
 /dist
 
-# ignore javadoc files
-public/javadoc/*
-
 # local env files
 .env.local
 .env.*.local
