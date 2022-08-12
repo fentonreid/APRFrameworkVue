@@ -15,7 +15,7 @@
       </div>
       <div id="comparison_window">
         <div id="gppatch_container">
-          <h3 id="gppatch_heading">Fixed Patch</h3>
+          <h3 id="gppatch_heading">GP Patch</h3>
           <div
             id="gppatch"
             class="scrollbox"
@@ -23,7 +23,7 @@
           />
         </div>
         <div id="actualpatch_container">
-          <h3 id="actualpatch_heading">Post-mutation</h3>
+          <h3 id="actualpatch_heading">Actual Path</h3>
           <div
             id="actualpatch"
             class="scrollbox"
