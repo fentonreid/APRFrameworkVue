@@ -14,20 +14,20 @@
         <h3 id="bug_count">{{ currentIndex + 1 }}/{{ patches.length }}</h3>
       </div>
       <div id="comparison_window">
+        <div id="actualpatch_container">
+          <h3 id="actualpatch_heading">Actual Patch</h3>
+          <div
+            id="actualpatch"
+            class="scrollbox"
+            v-html="this.patches[currentIndex].actualPatch"
+          />
+        </div>
         <div id="gppatch_container">
           <h3 id="gppatch_heading">GP Patch</h3>
           <div
             id="gppatch"
             class="scrollbox"
             v-html="this.patches[currentIndex].gpPatch"
-          />
-        </div>
-        <div id="actualpatch_container">
-          <h3 id="actualpatch_heading">Actual Path</h3>
-          <div
-            id="actualpatch"
-            class="scrollbox"
-            v-html="this.patches[currentIndex].actualPatch"
           />
         </div>
       </div>
