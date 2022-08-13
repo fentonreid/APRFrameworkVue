@@ -18,7 +18,7 @@
           x="14.48715"
         />
 
-        <a xlink:href="http://localhost:8080/mutationoperators/lrr">
+        <a xlink:href="/mutationoperators/lrr">
           <rect
             style="fill: #000000; fill-opacity: 0"
             id="rect1222"
@@ -29,7 +29,7 @@
           />
         </a>
 
-        <a xlink:href="http://localhost:8080/mutationoperators/gnr">
+        <a xlink:href="/mutationoperators/gnr">
           <rect
             style="fill: #000000; fill-opacity: 0"
             id="rect239"
@@ -40,7 +40,7 @@
           />
         </a>
 
-        <a xlink:href="http://localhost:8080/mutationoperators/bar">
+        <a xlink:href="/mutationoperators/bar">
           <rect
             style="fill: #000000; fill-opacity: 0"
             id="rect1233"
@@ -51,7 +51,7 @@
           />
         </a>
 
-        <a xlink:href="http://localhost:8080/mutationoperators/spm">
+        <a xlink:href="/mutationoperators/spm">
           <rect
             style="fill: #000000; fill-opacity: 0"
             id="rect1235"
@@ -62,7 +62,7 @@
           />
         </a>
 
-        <a xlink:href="http://localhost:8080/mutationoperators/lrrelocation">
+        <a xlink:href="/mutationoperators/lrrelocation">
           <rect
             style="fill: #000000; fill-opacity: 0"
             id="rect1237"
@@ -73,7 +73,7 @@
           />
         </a>
 
-        <a xlink:href="http://localhost:8080/mutationoperators/lrremoval">
+        <a xlink:href="/mutationoperators/lrremoval">
           <rect
             style="fill: #000000; fill-opacity: 0"
             id="rect1239"
@@ -84,7 +84,7 @@
           />
         </a>
 
-        <a xlink:href="http://localhost:8080/mutationoperators/ber">
+        <a xlink:href="/mutationoperators/ber">
           <rect
             style="fill: #000000; fill-opacity: 0"
             id="rect1241"
@@ -95,7 +95,7 @@
           />
         </a>
 
-        <a xlink:href="http://localhost:8080/mutationoperators/bem">
+        <a xlink:href="/mutationoperators/bem">
           <rect
             style="fill: #000000; fill-opacity: 0"
             id="rect1243"
@@ -106,7 +106,7 @@
           />
         </a>
 
-        <a xlink:href="http://localhost:8080/mutationoperators/berexpansion">
+        <a xlink:href="/mutationoperators/berexpansion">
           <rect
             style="fill: #000000; fill-opacity: 0"
             id="rect1245"
@@ -117,7 +117,7 @@
           />
         </a>
 
-        <a xlink:href="http://localhost:8080/mutationoperators/berreduction">
+        <a xlink:href="/mutationoperators/berreduction">
           <rect
             style="fill: #000000; fill-opacity: 0"
             id="rect1247"
