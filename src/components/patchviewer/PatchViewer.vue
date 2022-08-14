@@ -253,6 +253,7 @@ export default {
       this.performFilter();
     },
     performFilter() {
+      this.currentIndex = 0;
       this.filterPatches = this.patches.filter((patch) => {
         return (
           this.selectedIdentifiers.includes(patch.identifier) &&
