@@ -373,6 +373,18 @@
         {
           "hour": "12",
           "description": "Writing report, determing overfitness and creating tables for experiment 1"
+        },
+        {
+          "hour": "12",
+          "description": "Writing report"
+        }, 
+        {
+          "hour": "12", 
+          "description": "Writing report"
+        }, 
+        {
+          "hour": "12",
+          "description": "Writing report"
         }
       ]
     }
